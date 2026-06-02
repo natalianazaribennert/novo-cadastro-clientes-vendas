@@ -102,6 +102,33 @@ var appData = {
 };
 ```
 
+### Endpoints necessários
+
+#### `GET /api/modulos`
+Lista de módulos disponíveis para o usuário autenticado. Pode variar por plano/permissão.
+
+**Resposta esperada:**
+```json
+[
+  {
+    "titulo": "string — nome do módulo",
+    "img":    "string — caminho relativo ou URL absoluta da ilustração",
+    "url":    "string — endereço do módulo (abre em nova aba)"
+  }
+]
+```
+
+---
+
+### O que não precisa de endpoint
+
+Os dados abaixo são configuração estática de UI — iguais para todos os usuários, não precisam vir do back-end:
+
+| Variável | Descrição |
+|---|---|
+| `$scope.vinculoOpts` | Opções do campo Vínculo nas referências |
+| `PROFISSOES` | Lista de profissões (CBO) do autocomplete |
+
 ---
 
 ## Design de referência
