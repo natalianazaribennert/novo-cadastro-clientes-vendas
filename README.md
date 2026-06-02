@@ -104,6 +104,20 @@ var appData = {
 
 ### Endpoints necessários
 
+#### `GET /api/loja/info`
+Dados da loja e do usuário autenticado. Chamado uma vez no carregamento da página.
+
+**Resposta esperada:**
+```json
+{
+  "storeName": "string — nome da loja logada",
+  "storeId":   "number — ID da loja logada",
+  "userName":  "string — nome do usuário logado"
+}
+```
+
+---
+
 #### `GET /api/modulos`
 Lista de módulos disponíveis para o usuário autenticado. Pode variar por plano/permissão.
 
@@ -116,6 +130,98 @@ Lista de módulos disponíveis para o usuário autenticado. Pode variar por plan
     "url":    "string — endereço do módulo (abre em nova aba)"
   }
 ]
+```
+
+---
+
+#### `GET /api/financeiro/cliente?cpf={cpf}`
+Histórico financeiro do cliente exibido no modal **Espelho do cliente**. Chamado ao abrir o modal.
+
+**Resposta esperada:**
+```json
+{
+  "parcelasPagasQtd":      "number",
+  "parcelasPagasTotal":    "string — valor formatado em pt-BR, ex: \"1.440,00\"",
+  "parcelasAbertasQtd":    "number",
+  "parcelasAbertasTotal":  "string",
+  "parcelasVencidasQtd":   "number",
+  "parcelasVencidasTotal": "string",
+  "jurosPagos":            "string",
+  "multasPagas":           "string",
+  "mediaCompra":           "string",
+  "totalComprado":         "string"
+}
+```
+
+> Se o cliente não tiver histórico, retornar `null` — o front-end exibe *"Ainda não temos informações sobre os pagamentos do cliente."*
+
+---
+
+#### `GET /api/clientes?cpf={cpf}`
+Verifica se o CPF já possui cadastro ativo. Chamado ao completar o campo CPF.
+
+**Resposta esperada:**
+```json
+{
+  "existe": "boolean — true se o CPF já está cadastrado"
+}
+```
+
+---
+
+#### `POST /api/clientes`
+Salva o cadastro do cliente. Chamado pelos botões **Analisar**, **Vender** e **Apenas salvar**.
+
+**Body esperado:**
+```json
+{
+  "cpf":          "string",
+  "nome":         "string",
+  "nascimento":   "string — DD/MM/AAAA",
+  "rg":           "string",
+  "rgOrgao":      "string",
+  "rgEstado":     "string",
+  "rgEmissao":    "string — DD/MM/AAAA",
+  "genero":       "string",
+  "mae":          "string",
+  "pai":          "string",
+  "estadoCivil":  "string",
+  "cidade":       "string",
+  "cep":          "string",
+  "logradouro":   "string",
+  "numero":       "string",
+  "bairro":       "string",
+  "complemento":  "string",
+  "celular":      "string",
+  "email":        "string",
+  "profissao":    "string",
+  "empresa":      "string",
+  "salario":      "string"
+}
+```
+
+---
+
+#### `POST /api/analise`
+Dispara a análise de crédito após salvar o cadastro. Chamado exclusivamente pelo botão **Analisar**.
+
+**Body esperado:**
+```json
+{
+  "cpf": "string — CPF do cliente recém-cadastrado"
+}
+```
+
+---
+
+#### `POST /api/vendas`
+Inicia o processo de venda após salvar o cadastro. Chamado exclusivamente pelo botão **Vender**.
+
+**Body esperado:**
+```json
+{
+  "cpf": "string — CPF do cliente recém-cadastrado"
+}
 ```
 
 ---
