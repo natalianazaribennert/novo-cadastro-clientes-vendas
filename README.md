@@ -237,6 +237,22 @@ Os dados abaixo são configuração estática de UI — iguais para todos os usu
 
 ---
 
+## Fluxos adicionais
+
+Esta documentação cobre o fluxo principal de **novo cadastro**. Existem versões e estados adicionais da tela que dependem de cenários específicos e são detalhados no protótipo do Figma:
+
+| Fluxo | Descrição |
+|---|---|
+| **Edição de cadastro** | Versão da tela com campos pré-preenchidos para editar um cliente existente |
+| **Cliente bloqueado** | Estado que impede determinadas ações dependendo da situação do cliente |
+| **Alertas contextuais** | Mensagens exibidas conforme o resultado da análise ou dados do cliente |
+| **Modais específicos** | Modais disparados por cenários como duplicidade de CPF, confirmações e avisos |
+| **Redirecionamentos** | Direcionamento para outras URLs após ações como Analisar ou Vender |
+
+> Para entender o comportamento esperado de cada um desses fluxos, consulte o protótipo no Figma referenciado na seção [Design de referência](#design-de-referência).
+
+---
+
 ## Design de referência
 
 - **Figma:** [`UXSTUDY-1 — Melhorias no Vendas`](https://www.figma.com/design/TO7ncgH7p35DaS0LudLv2H/-UXSTUDY-1--Melhorias-no-Vendas?node-id=996-9068&m=dev)
