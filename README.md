@@ -104,6 +104,13 @@ var appData = {
 
 ---
 
+## Design de referência
+
+- **Figma:** [`UXSTUDY-1 — Melhorias no Vendas`](https://www.figma.com/design/TO7ncgH7p35DaS0LudLv2H/-UXSTUDY-1--Melhorias-no-Vendas?node-id=996-9068&m=dev)
+- Nó principal: `996:9068`
+
+---
+
 ## Tokens de cor (CSS custom properties)
 
 Definidos em [`css/novo-cadastro.css`](css/novo-cadastro.css):
