@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="cadastroVendasApp">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novo Cadastro – Meu Crediário</title>
+  <!-- jQuery 3.6.0 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- AngularJS 1.6.10 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/novo-cadastro.css" />
+</head>
+<body ng-controller="CadastroCtrl">
+
+  <!-- HEADER -->
+  <header class="vendas-header">
+    <div class="hd-container">
+
+      <div class="hd-brand">
+        <a href="#" class="hd-logo-link">
+          <img src="data:image/png;base64,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" alt="Meu Crediário" class="hd-logo">
+        </a>
+        <div class="hd-divider">
+          <span class="hd-title">Vendas</span>
+        </div>
+      </div>
+
+      <nav class="hd-nav">
+        <a href="#" class="hd-menu-link">
+          <i class="fas fa-bars"></i>
+          <span>MENU</span>
+        </a>
+
+        <div class="hd-overlay" id="hd-overlay" ng-click="fecharTudo()"></div>
+
+        <div class="hd-user-wrap" id="hd-user-wrap">
+          <button class="hd-user-btn" ng-click="toggleDropdown()">
+            <span id="hd-store-name"></span>&nbsp;<i class="fas fa-caret-down"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><p><i class="fas fa-user-circle"></i>&nbsp;<span id="hd-user-name"></span></p></li>
+            <li><a href="#"><i class="fas fa-building"></i>&nbsp;Minha loja</a></li>
+            <li class="divider"></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a></li>
+          </ul>
+        </div>
+
+        <div class="hd-id-badge" ng-click="copiarId()" title="Copiar ID">
+          <svg id="hd-id-icon" width="17.5" height="14" viewBox="0 0 17.5 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.375 12.25V13.3438C11.375 13.7266 11.0742 14 10.7188 14H3.28125C2.89844 14 2.625 13.7266 2.625 13.3438V3.28125C2.625 2.92578 2.89844 2.625 3.28125 2.625H5.25V10.7188C5.25 11.5664 5.93359 12.25 6.78125 12.25H11.375ZM11.375 2.84375C11.375 3.22656 11.6484 3.5 12.0312 3.5H14.875V10.7188C14.875 11.1016 14.5742 11.375 14.2188 11.375H6.78125C6.39844 11.375 6.125 11.1016 6.125 10.7188V0.65625C6.125 0.300781 6.39844 0 6.78125 0H11.375V2.84375ZM14.6562 1.99609C14.793 2.13281 14.875 2.29688 14.875 2.46094V2.625H12.25V0H12.4141C12.5781 0 12.7422 0.0820312 12.8789 0.21875L14.6562 1.99609Z" fill="#F1F6F5"/>
+          </svg>
+          <i id="hd-id-check" class="fas fa-check" style="display:none"></i>
+          <span id="hd-store-id"></span>
+        </div>
+
+        <div class="hd-modulos-wrap" id="hd-modulos-wrap">
+          <button class="hd-grid-btn" ng-click="toggleModulos()">
+            <svg width="25.71" height="18" viewBox="0 0 30 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.875 0H25.875C26.4844 0 27 0.515625 27 1.125V8.625C27 9.28125 26.4844 9.75 25.875 9.75H16.875C16.2188 9.75 15.75 9.28125 15.75 8.625V1.125C15.75 0.515625 16.2188 0 16.875 0ZM13.125 0C13.7344 0 14.25 0.515625 14.25 1.125V8.625C14.25 9.28125 13.7344 9.75 13.125 9.75H4.125C3.46875 9.75 3 9.28125 3 8.625V1.125C3 0.515625 3.46875 0 4.125 0H13.125ZM3 12.375C3 11.7656 3.46875 11.25 4.125 11.25H13.125C13.7344 11.25 14.25 11.7656 14.25 12.375V19.875C14.25 20.5312 13.7344 21 13.125 21H4.125C3.46875 21 3 20.5312 3 19.875V12.375ZM16.875 21C16.2188 21 15.75 20.5312 15.75 19.875V12.375C15.75 11.7656 16.2188 11.25 16.875 11.25H25.875C26.4844 11.25 27 11.7656 27 12.375V19.875C27 20.5312 26.4844 21 25.875 21H16.875Z" fill="#E3F6F3"/>
+            </svg>
+          </button>
+          <div class="hd-modulos-popover" id="hd-modulos-popover">
+            <p class="hd-modulos-titulo">MÓDULOS</p>
+            <div class="hd-modulos-grid" id="hd-modulos-grid"></div>
+          </div>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Page header -->
+    <div class="page-header">
+      <h1>Novo cadastro</h1>
+      <button class="btn-secondary" ng-click="abrirEspelho()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">
+          <g clip-path="url(#clip0_996_7004)">
+            <path d="M7.879 3.72055L7.875 0.00180574L2.40625 0.00335632C2.32001 0.00314986 2.23459 0.0199909 2.1549 0.0529113C2.07521 0.0858318 2.00282 0.134182 1.9419 0.195184C1.88099 0.256186 1.83273 0.328636 1.79992 0.408369C1.76711 0.488103 1.75038 0.573547 1.75071 0.659792L1.76433 13.3473C1.76419 13.4335 1.7811 13.519 1.81409 13.5987C1.84707 13.6784 1.89548 13.7508 1.95653 13.8118C2.01758 13.8728 2.09006 13.9211 2.16982 13.9539C2.24958 13.9868 2.33504 14.0036 2.42129 14.0033L11.6088 14.0007C11.695 14.0009 11.7805 13.9841 11.8601 13.9512C11.9398 13.9183 12.0122 13.8699 12.0731 13.8089C12.1341 13.7479 12.1823 13.6755 12.2151 13.5957C12.2479 13.516 12.2647 13.4306 12.2643 13.3443L12.2547 4.37556L8.53595 4.37662C8.36204 4.3762 8.19532 4.30696 8.07222 4.18403C7.94911 4.06109 7.87964 3.89446 7.879 3.72055ZM9.63593 10.1732C9.63579 10.2601 9.60123 10.3435 9.53981 10.405C9.47839 10.4665 9.39511 10.5011 9.30815 10.5014L4.7144 10.5027C4.62745 10.5025 4.54409 10.4679 4.48254 10.4064C4.42098 10.3449 4.38625 10.2616 4.38593 10.1747L4.38569 9.95592C4.38583 9.86896 4.42038 9.78563 4.4818 9.72413C4.54322 9.66262 4.62651 9.62796 4.71346 9.6277L9.30721 9.6264C9.39417 9.6266 9.47753 9.66122 9.53908 9.72269C9.60063 9.78416 9.63537 9.86748 9.63569 9.95443L9.63593 10.1732ZM9.63405 8.42318C9.63391 8.51013 9.59935 8.59347 9.53793 8.65497C9.47652 8.71647 9.39323 8.75114 9.30627 8.7514L4.71252 8.7527C4.62557 8.75249 4.54221 8.71787 4.48066 8.65641C4.4191 8.59494 4.38437 8.51162 4.38405 8.42467L4.38381 8.20592C4.38395 8.11897 4.4185 8.03563 4.47992 7.97413C4.54134 7.91262 4.62463 7.87796 4.71158 7.8777L9.30533 7.8764C9.39229 7.8766 9.47565 7.91123 9.5372 7.97269C9.59875 8.03416 9.63349 8.11748 9.63381 8.20443L9.63405 8.42318ZM9.63193 6.45443L9.63217 6.67318C9.63203 6.76013 9.59747 6.84347 9.53606 6.90497C9.47464 6.96648 9.39135 7.00114 9.30439 7.0014L4.71064 7.0027C4.62369 7.0025 4.54033 6.96787 4.47878 6.90641C4.41723 6.84494 4.38249 6.76162 4.38217 6.67467L4.38193 6.45592C4.38207 6.36897 4.41662 6.28563 4.47804 6.22413C4.53946 6.16263 4.62275 6.12796 4.7097 6.1277L9.30345 6.1264C9.39041 6.12661 9.47377 6.16123 9.53532 6.22269C9.59687 6.28416 9.63161 6.36748 9.63193 6.45443ZM12.2536 3.33344L12.2538 3.50056L8.75376 3.50156L8.75 0.00155765L8.91713 0.00151027C9.00337 0.00128405 9.08883 0.0180827 9.16859 0.0509431C9.24836 0.0838036 9.32087 0.13208 9.38196 0.193003L12.0615 2.87237C12.1839 2.99468 12.253 3.16045 12.2536 3.33344Z" fill="#333333"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_996_7004">
+              <rect width="14" height="14" fill="white" transform="matrix(1 -0.000283533 0.00107386 0.999999 0 0.00402832)"/>
+            </clipPath>
+          </defs>
+        </svg>
+        Espelho do cliente
+      </button>
+    </div>
+
+    <div class="content">
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+        <div class="card">
+          <span class="card__title">Situação do cadastro</span>
+          <div>
+            <div id="status-pills" class="status-pills"></div>
+            <p class="status-desc" id="status-desc">O cadastro ainda não possui informações suficientes para a análise.</p>
+          </div>
+          <div class="fields-count">
+            <span>Campos preenchidos</span>
+            <span id="fields-count">0/<span id="fields-total">0</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card__title">Navegação rápida</span>
+          <nav class="nav-list">
+            <button class="nav-item nav-item--active" ng-click="scrollToSection('sec-identificacao',$event)"><span class="nav-num">1</span>Identificação</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-endereco',$event)"><span class="nav-num">2</span>Endereço</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-contato',$event)"><span class="nav-num">3</span>Contato</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-ocupacao',$event)"><span class="nav-num">4</span>Ocupação</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-referencias',$event)"><span class="nav-num">5</span>Referências</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-observacoes',$event)"><span class="nav-num">6</span>Observações</button>
+          </nav>
+        </div>
+
+        <div class="alerta-card">
+          <div class="alerta-card__header">
+            <i class="fa-solid fa-file-circle-exclamation alerta-card__icon"></i>
+            <span class="alerta-card__title">Revise os dados com o cliente</span>
+          </div>
+          <p class="alerta-card__body">Confirme se todas as informações estão corretas antes de finalizar o cadastro.</p>
+        </div>
+      </aside>
+
+      <!-- ── Form ── -->
+      <main class="form-area">
+
+        <!-- Identificação -->
+        <section id="sec-identificacao" class="form-section">
+          <span class="section-title">Identificação</span>
+
+          <div class="subsection">
+            <span class="subsection__label">Informações pessoais</span>
+            <div class="field-row">
+              <div class="field" style="flex:180">
+                <label>CPF<span class="req">*</span></label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': cpfVal.cpf.erro}"><input id="f-cpf" ng-model="form.cpf" mascara="cpf" type="tel" placeholder="000.000.000-00" maxlength="14"></div>
+                <span class="field-msg field-msg--erro" ng-show="cpfVal.cpf.erro" ng-bind="cpfVal.cpf.msg"></span>
+              </div>
+              <div class="field" style="flex:340">
+                <label>Nome completo<span class="req">*</span></label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': nomeVal.nome.erro}"><input id="f-nome" ng-model="form.nome" mascara="nome" type="text" placeholder="Digite o nome completo do cliente" ng-blur="validateNomeBlur()"></div>
+                <span class="field-msg field-msg--erro" ng-show="nomeVal.nome.erro" ng-bind="nomeVal.nome.msg"></span>
+              </div>
+              <div class="field" style="flex:180">
+                <label>Data de nascimento</label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.nasc.erro}"><input id="f-nascimento" ng-model="form.nascimento" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10"></div>
+                <span class="field-msg field-msg--erro"  ng-show="dateVal.nasc.erro"  ng-bind="dateVal.nasc.msg"></span>
+                <span class="field-msg field-msg--aviso" ng-show="dateVal.nasc.aviso" ng-bind="dateVal.nasc.msg"></span>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="flex:1">
+                <label>Número do RG</label>
+                <div class="ctrl"><input id="f-rg" ng-model="form.rg" mascara="rg" type="tel" placeholder="00.000.000-0" maxlength="12"></div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Órgão emissor do RG</label>
+                <div class="ctrl ctrl--select">
+                  <select id="f-rg-orgao" ng-model="form.rgOrgao">
+                    <option value="">Selecione</option>
+                    <option>SSP</option><option>DETRAN</option><option>PM</option><option>CRM</option><option>OAB</option><option>Outro</option>
+                  </select>
+                  <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                </div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Estado emissor do RG</label>
+                <div class="ctrl ctrl--select">
+                  <select id="f-rg-estado" ng-model="form.rgEstado">
+                    <option value="">Selecione</option>
+                    <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+                  </select>
+                  <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                </div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Data de emissão do RG</label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.rgEmissao.erro}"><input id="f-rg-emissao" ng-model="form.rgEmissao" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10"></div>
+                <span class="field-msg field-msg--erro" ng-show="dateVal.rgEmissao.erro" ng-bind="dateVal.rgEmissao.msg"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-sep"><span class="section-sep__label">Informações complementares</span><div class="section-sep__line"></div></div>
+          <div class="field-row">
+            <div class="field" style="flex:192">
+              <label>Gênero</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-genero" ng-model="form.genero"><option value="">Selecione</option><option>Feminino</option><option>Masculino</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:248">
+              <label>Nome completo da mãe</label>
+              <div class="ctrl"><input id="f-mae" ng-model="form.mae" mascara="nome" type="text" placeholder="Nome completo da mãe do cliente"></div>
+            </div>
+            <div class="field" style="flex:278">
+              <label>Nome completo do pai</label>
+              <div class="ctrl"><input id="f-pai" ng-model="form.pai" mascara="nome" type="text" placeholder="Nome completo do pai do cliente"></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:192">
+              <label>Nível de escolaridade</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-escolaridade" ng-model="form.escolaridade"><option value="">Selecione</option><option>Sem escolaridade</option><option>Fund. incompleto</option><option>Fund. completo</option><option>Médio incompleto</option><option>Médio completo</option><option>Superior incompleto</option><option>Superior completo</option><option>Pós-graduação</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:270">
+              <label>Possui dependentes?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-dependentes" ng-model="form.dependentes"><option value="">Selecione</option><option>Não possui</option><option>Sim, 1</option><option>Sim, 2</option><option>Sim, 3</option><option>Sim, 4 ou mais</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:129">
+              <label>Possui carro?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-carro" ng-model="form.carro"><option value="">Selecione</option><option>Não possui</option><option>Sim, financiado</option><option>Sim, quitado</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:129">
+              <label>Possui moto?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-moto" ng-model="form.moto"><option value="">Selecione</option><option>Não possui</option><option>Sim, financiado</option><option>Sim, quitado</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-sep"><span class="section-sep__label">Situação conjugal</span><div class="section-sep__line"></div></div>
+          <div class="field-row" style="flex-wrap:wrap">
+            <div class="field" style="width:192px">
+              <label>Estado civil atual</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-estado-civil" ng-model="form.estadoCivil" ng-change="toggleConjuge(form.estadoCivil)"><option value="">Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <!-- Campos do cônjuge — visíveis apenas quando Casado(a) ou União estável -->
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:180px">
+              <label>CPF do cônjuge</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': cpfVal.cpfConj.erro}"><input id="f-cpf-conjuge" ng-model="form.cpfConjuge" mascara="cpf" type="tel" placeholder="000.000.000-00" maxlength="14" ng-disabled="!exibeConjuge"></div>
+              <span class="field-msg field-msg--erro" ng-show="cpfVal.cpfConj.erro" ng-bind="cpfVal.cpfConj.msg"></span>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="flex:1;min-width:300px">
+              <label>Nome completo do cônjuge</label>
+              <div class="ctrl"><input id="f-nome-conjuge" ng-model="form.nomeConjuge" mascara="nome" type="text" placeholder="Digite o nome completo do cônjuge do cliente" ng-disabled="!exibeConjuge"></div>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:192px">
+              <label>Data de nascimento do cônjuge</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.nascConj.erro}"><input id="f-nasc-conjuge" ng-model="form.nascConjuge" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10" ng-disabled="!exibeConjuge"></div>
+              <span class="field-msg field-msg--erro" ng-show="dateVal.nascConj.erro" ng-bind="dateVal.nascConj.msg"></span>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:180px">
+              <label>Celular do cônjuge</label>
+              <div class="ctrl"><input id="f-cel-conjuge" ng-model="form.celConjuge" mascara="phone" type="tel" placeholder="(99) 99999-9999" maxlength="15" ng-disabled="!exibeConjuge"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Endereço -->
+        <section id="sec-endereco" class="form-section">
+          <span class="section-title">Endereço</span>
+          <div class="field-row">
+            <!-- Cidade — autocomplete IBGE -->
+            <div class="field" style="flex:246">
+              <label>Cidade</label>
+              <div class="ctrl" id="ctrl-cidade">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="inp-cidade" ng-model="form.cidade" type="text" placeholder="Digite para buscar a cidade" autocomplete="off">
+              </div>
+              <div id="lista-cidade" class="autocomplete-list"></div>
+            </div>
+            <!-- CEP ou Rua — autocomplete ViaCEP -->
+            <div class="field" style="flex:248">
+              <label>CEP ou Rua</label>
+              <div class="ctrl ctrl--disabled" id="ctrl-cep">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="inp-cep" ng-model="form.cep" type="text" placeholder="CEP (00000-000) ou nome da rua" disabled autocomplete="off">
+              </div>
+              <div id="lista-cep" class="autocomplete-list"></div>
+            </div>
+            <!-- Logradouro — preenchido via API, editável -->
+            <div class="field" style="flex:246">
+              <label>Logradouro</label>
+              <div class="ctrl ctrl--disabled"><input id="f-logradouro" ng-model="form.logradouro" class="addr-dep" type="text" placeholder="Rua, avenida, etc." disabled></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <!-- Número — liberado ao selecionar cidade -->
+            <div class="field" style="flex:90">
+              <label>Número</label>
+              <div class="ctrl ctrl--disabled"><input id="f-numero" ng-model="form.numero" class="addr-cidade" type="tel" placeholder="Ex: 123" disabled></div>
+            </div>
+            <div class="field" style="flex:136">
+              <label>Bairro</label>
+              <div class="ctrl ctrl--disabled"><input id="f-bairro" ng-model="form.bairro" class="addr-dep" type="text" placeholder="Nome do bairro" disabled></div>
+            </div>
+            <div class="field" style="flex:248">
+              <label>Complemento</label>
+              <div class="ctrl ctrl--disabled"><input id="f-complemento" ng-model="form.complemento" class="addr-dep" type="text" placeholder="Apto, bloco, casa…" disabled></div>
+            </div>
+            <div class="field" style="flex:246">
+              <label>Referência</label>
+              <div class="ctrl ctrl--disabled"><input id="f-referencia-end" ng-model="form.referenciaEnd" class="addr-dep" type="text" placeholder="Ex: Próximo ao mercado" disabled></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex: 0 0 calc((100% - 32px) / 3); min-width: 0">
+              <label>Tempo de residência</label>
+              <div class="ctrl ctrl--select ctrl--disabled">
+                <select id="f-tempo-residencia" ng-model="form.tempoResidencia" class="addr-dep" disabled><option value="">Selecione</option><option>Menos de 1 ano</option><option>1 a 2 anos</option><option>2 a 5 anos</option><option>5 a 10 anos</option><option>Mais de 10 anos</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex: 0 0 calc((100% - 32px) / 3); min-width: 0">
+              <label>Situação da residência</label>
+              <div class="ctrl ctrl--select ctrl--disabled">
+                <select id="f-situacao-residencia" ng-model="form.situacaoResidencia" class="addr-dep" disabled><option value="">Selecione</option><option>Alugada</option><option>Própria quitada</option><option>Própria financiada</option><option>Mora com os pais</option><option>Residência funcional</option><option>Outro</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contato -->
+        <section id="sec-contato" class="form-section">
+          <span class="section-title">Contato</span>
+          <div class="field-row">
+            <div class="field" style="flex:125">
+              <label>Celular</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.celular.erro}"><input id="f-celular" ng-model="form.celular" mascara="phone" type="tel" placeholder="(99) 99999-9999" maxlength="15" ng-blur="validatePhoneBlur('celular', 15)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.celular.erro" ng-bind="phoneVal.celular.msg"></span>
+            </div>
+            <div class="field" style="flex:200">
+              <label>E-mail</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': emailVal.email.erro}"><input id="f-email" ng-model="form.email" type="text" placeholder="email@exemplo.com" ng-blur="validateEmailBlur()"></div>
+              <span class="field-msg field-msg--erro" ng-show="emailVal.email.erro" ng-bind="emailVal.email.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Telefone residencial</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.telRes.erro}"><input id="f-tel-res" ng-model="form.telRes" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('telRes', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.telRes.erro" ng-bind="phoneVal.telRes.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Telefone comercial</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.telCom.erro}"><input id="f-tel-com" ng-model="form.telCom" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('telCom', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.telCom.erro" ng-bind="phoneVal.telCom.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Outro telefone</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.outroTel.erro}"><input id="f-outro-tel" ng-model="form.outroTel" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('outroTel', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.outroTel.erro" ng-bind="phoneVal.outroTel.msg"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ocupação -->
+        <section id="sec-ocupacao" class="form-section">
+          <span class="section-title">Ocupação</span>
+          <div class="field-row">
+            <div class="field" style="flex:237;min-width:0">
+              <label>Profissão</label>
+              <div class="ctrl" id="ctrl-profissao">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="f-profissao" ng-model="form.profissao" type="text" placeholder="Digite para buscar a profissão" autocomplete="off">
+              </div>
+              <div id="lista-profissao" class="autocomplete-list"></div>
+            </div>
+            <div class="field" style="flex:237;min-width:0">
+              <label>Empresa onde trabalha</label>
+              <div class="ctrl"><input id="f-empresa" ng-model="form.empresa" type="text" placeholder="Nome da empresa"></div>
+            </div>
+            <div class="field" style="flex:123;min-width:0">
+              <label>Tempo de empresa</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-tempo-empresa" ng-model="form.tempoEmpresa"><option value="">Selecione</option><option>Menos de 1 ano</option><option>1 a 2 anos</option><option>2 a 5 anos</option><option>5 a 10 anos</option><option>Mais de 10 anos</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:123;min-width:0">
+              <label>Salário líquido</label>
+              <div class="ctrl">
+                <input id="f-salario" ng-model="form.salario" mascara="currency" type="tel" placeholder="0,00" style="padding-right:4px">
+                <span class="ctrl__suffix">R$</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Referências -->
+        <section id="sec-referencias" class="form-section">
+          <div class="section-row">
+            <div>
+              <span class="section-title">Referências</span>
+              <p class="empty-text" id="ref-empty-msg" ng-show="referencias.length === 0" style="margin-top:3px">Nenhuma referência adicionada para o cliente.</p>
+            </div>
+            <button class="btn-secondary" id="btn-adicionar-ref" ng-click="adicionarRef()" ng-show="referencias.length < 2">
+              <span class="btn-secondary__icon"><i class="fa-solid fa-user-plus"></i></span>
+              Adicionar referência
+            </button>
+          </div>
+          <div id="ref-lista" ng-show="referencias.length > 0">
+            <div class="ref-block" ng-repeat="ref in referencias track by $index">
+              <div class="ref-sep">
+                <span class="ref-sep__label">Referência {{$index + 1}}</span>
+                <span class="ref-sep__line"></span>
+              </div>
+              <div class="ref-fields">
+                <div class="field" style="flex:1;min-width:120px">
+                  <label>Nome</label>
+                  <div class="ctrl"><input type="text" ng-model="ref.nome" placeholder="Nome completo"></div>
+                </div>
+                <div class="field" style="flex:0 0 140px;min-width:0">
+                  <label>Vínculo</label>
+                  <div class="ctrl ctrl--select">
+                    <select ng-model="ref.vinculo">
+                      <option value="">Selecione</option>
+                      <option ng-repeat="v in vinculoOpts">{{v}}</option>
+                    </select>
+                    <span class="ctrl__chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </div>
+                </div>
+                <div class="field" style="flex:0 0 125px;min-width:0">
+                  <label>Celular</label>
+                  <div class="ctrl"><input type="tel" ng-model="ref.celular" mascara="phone" placeholder="(00) 00000-0000"></div>
+                </div>
+                <div class="field" style="flex:0 0 125px;min-width:0">
+                  <label>Telefone</label>
+                  <div class="ctrl"><input type="tel" ng-model="ref.telefone" mascara="phone-fix" placeholder="(00) 0000-0000"></div>
+                </div>
+                <button class="btn-danger" ng-click="removerRef($index)">Excluir referência</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Observações -->
+        <section id="sec-observacoes" class="form-section">
+
+          <!-- Estado: vazio -->
+          <div ng-show="obsState === 'empty'" class="section-row">
+            <div>
+              <span class="section-title">Observações</span>
+              <p class="empty-text" style="margin-top:3px">Nenhuma observação adicionada para o cliente.</p>
+            </div>
+            <button class="btn-secondary" ng-click="obsModoEdicao()">
+              <span class="btn-secondary__icon"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+              Adicionar observações
+            </button>
+          </div>
+
+          <!-- Estado: editando ou com tags -->
+          <div ng-show="obsState !== 'empty'" class="obs-container">
+            <span class="section-title">Observações</span>
+            <div>
+              <label class="obs-input-label">Observações do cliente</label>
+              <div class="ctrl">
+                <input type="text" id="obs-input" ng-model="obs.texto" ng-keydown="obsKeydown($event)" placeholder="Digite uma observação e pressione ENTER para adicionar como tag..." style="padding:0 15px">
+              </div>
+            </div>
+
+            <!-- Tags adicionadas -->
+            <div class="obs-tags-section" ng-show="obs.tags.length > 0">
+              <div class="obs-tags-header">
+                <span class="obs-tags-label">Tags adicionadas</span>
+                <span class="obs-tags-line"></span>
+              </div>
+              <div class="obs-tags-list">
+                <button class="obs-tag" ng-repeat="tag in obs.tags track by $index" ng-click="obsRemoverTag($index)">
+                  <span>{{tag}}</span>
+                  <i class="fa-solid fa-xmark obs-tag__icon"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cancelar só no estado editing sem tags -->
+            <button class="btn-cancel-obs" ng-show="obsState === 'editing'" ng-click="obsCancelar()">Cancelar</button>
+          </div>
+
+        </section>
+
+      </main>
+    </div><!-- /content -->
+  </div><!-- /page -->
+
+  <!-- ── Espelho do cliente modal ── -->
+  <div class="espelho-overlay" id="espelho-overlay" ng-click="handleEspelhoOverlayClick($event)">
+    <div class="espelho-modal" id="espelho-modal">
+
+      <div class="espelho-header">
+        <div>
+          <div class="espelho-header-title">Espelho do cliente</div>
+          <div class="espelho-header-sub" id="espelho-subtitle">–</div>
+        </div>
+        <div class="espelho-header-actions">
+          <button class="espelho-btn-salvar" ng-click="espelhoImprimir()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 15 14" fill="none">
+              <g clip-path="url(#ec1)"><path d="M7.879 3.72055L7.875 0.00180574L2.40625 0.00335632C2.32001 0.00314986 2.23459 0.0199909 2.1549 0.0529113C2.07521 0.0858318 2.00282 0.134182 1.9419 0.195184C1.88099 0.256186 1.83273 0.328636 1.79992 0.408369C1.76711 0.488103 1.75038 0.573547 1.75071 0.659792L1.76433 13.3473C1.76419 13.4335 1.7811 13.519 1.81409 13.5987C1.84707 13.6784 1.89548 13.7508 1.95653 13.8118C2.01758 13.8728 2.09006 13.9211 2.16982 13.9539C2.24958 13.9868 2.33504 14.0036 2.42129 14.0033L11.6088 14.0007C11.695 14.0009 11.7805 13.9841 11.8601 13.9512C11.9398 13.9183 12.0122 13.8699 12.0731 13.8089C12.1341 13.7479 12.1823 13.6755 12.2151 13.5957C12.2479 13.516 12.2647 13.4306 12.2643 13.3443L12.2547 4.37556L8.53595 4.37662C8.36204 4.3762 8.19532 4.30696 8.07222 4.18403C7.94911 4.06109 7.87964 3.89446 7.879 3.72055ZM9.63593 10.1732C9.63579 10.2601 9.60123 10.3435 9.53981 10.405C9.47839 10.4665 9.39511 10.5011 9.30815 10.5014L4.7144 10.5027C4.62745 10.5025 4.54409 10.4679 4.48254 10.4064C4.42098 10.3449 4.38625 10.2616 4.38593 10.1747L4.38569 9.95592C4.38583 9.86896 4.42038 9.78563 4.4818 9.72413C4.54322 9.66262 4.62651 9.62796 4.71346 9.6277L9.30721 9.6264C9.39417 9.6266 9.47753 9.66122 9.53908 9.72269C9.60063 9.78416 9.63537 9.86748 9.63569 9.95443L9.63593 10.1732ZM9.63405 8.42318C9.63391 8.51013 9.59935 8.59347 9.53793 8.65497C9.47652 8.71647 9.39323 8.75114 9.30627 8.7514L4.71252 8.7527C4.62557 8.75249 4.54221 8.71787 4.48066 8.65641C4.4191 8.59494 4.38437 8.51162 4.38405 8.42467L4.38381 8.20592C4.38395 8.11897 4.4185 8.03563 4.47992 7.97413C4.54134 7.91262 4.62463 7.87796 4.71158 7.8777L9.30533 7.8764C9.39229 7.8766 9.47565 7.91123 9.5372 7.97269C9.59875 8.03416 9.63349 8.11748 9.63381 8.20443L9.63405 8.42318ZM12.2536 3.33344L12.2538 3.50056L8.75376 3.50156L8.75 0.00155765L8.91713 0.00151027C9.00337 0.00128405 9.08883 0.0180827 9.16859 0.0509431C9.24836 0.0838036 9.32087 0.13208 9.38196 0.193003L12.0615 2.87237C12.1839 2.99468 12.253 3.16045 12.2536 3.33344Z" fill="#333333"/></g>
+              <defs><clipPath id="ec1"><rect width="14" height="14" fill="white" transform="matrix(1 -0.000283533 0.00107386 0.999999 0 0.00402832)"/></clipPath></defs>
+            </svg>
+            Salvar
+          </button>
+          <button class="espelho-btn-x" ng-click="fecharEspelho()" title="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="espelho-body" id="espelho-body">
+        <!-- preenchido via JS -->
+      </div>
+
+      <div class="espelho-footer">
+        <button class="espelho-btn-fechar" ng-click="fecharEspelho()">Fechar</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__left">
+        <button class="btn-cancel">Cancelar</button>
+        <span class="footer__key">Esc</span>
+      </div>
+      <div class="footer__right">
+        <div class="footer__action">
+          <button class="btn-action btn-analisar" id="btn-analisar"><span>Analisar</span></button>
+          <span class="footer__key">Ctrl + A</span>
+        </div>
+        <div class="footer__action">
+          <button class="btn-action btn-vender" id="btn-vender">Vender</button>
+          <span class="footer__key">Ctrl + Enter</span>
+        </div>
+        <div class="footer__action">
+          <button class="btn-save" id="btn-salvar">Apenas salvar</button>
+          <span class="footer__key">Ctrl + S</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <script src="app.js"></script>
+  <script src="js/NovoCadastroCtrl.js"></script>
+</body>
+</html>
