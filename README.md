@@ -245,9 +245,9 @@ Esta documentação cobre o fluxo principal de **novo cadastro**. Existem versõ
 |---|---|
 | **Edição de cadastro** | Versão da tela com campos pré-preenchidos para editar um cliente existente |
 | **Cliente bloqueado** | Estado que impede determinadas ações dependendo da situação do cliente |
-| **Alertas contextuais** | Mensagens exibidas conforme o resultado da análise ou dados do cliente |
-| **Modais específicos** | Modais disparados por cenários como duplicidade de CPF, confirmações e avisos |
-| **Redirecionamentos** | Direcionamento para outras URLs após ações como Analisar ou Vender |
+| **Alertas contextuais** | Mensagens exibidas conforme o preenchimento e acionamento dos botões de ação no footer |
+| **Modais específicos** | Modais disparados por cenários como confirmações e avisos |
+| **Redirecionamentos** | Direcionamento para outras URLs após ações como Analisar, Vender ou Apenas salvar |
 
 > Para entender o comportamento esperado de cada um desses fluxos, consulte o protótipo no Figma referenciado na seção [Design de referência](#design-de-referência).
 
