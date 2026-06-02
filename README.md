@@ -20,7 +20,6 @@ A página foi construída para se encaixar na stack já existente em `vendas.meu
 | jQuery | 3.6.0 | CDN |
 | Font Awesome | 6.5.2 Free | CDN |
 | Titillium Web | 400 / 600 / 700 | Google Fonts |
-| Open Sans | 400 / 600 | Google Fonts |
 
 Nenhum bundler, nenhum `npm install` necessário. Todos os assets são carregados via CDN em `index.html`.
 
