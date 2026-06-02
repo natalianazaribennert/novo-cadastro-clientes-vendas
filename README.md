@@ -112,7 +112,13 @@ Definidos em [`css/novo-cadastro.css`](css/novo-cadastro.css):
 |---|---|---|
 | `--header-bg` | `#007161` | Background do header |
 | `--primary-light` | `#00856e` | Botões primários ativos |
-| `--border-accent` | `#06664f` | Divisor do header |
+| `--brand` | `#06664f` | Divisor do header |
 | `--text-regular` | `#6e7697` | Labels e textos padrão |
-| `--red-required` | `#c5493b` | Asterisco de campo obrigatório e erros |
-| `--orange-text` | `#925c07` | Card de alerta |
+| `--gray-dark` | `#333333` | Textos escuros |
+| `--gray-medium` | `#cccccc` | Bordas de campos |
+| `--gray-light` | `#e5e5e5` | Bordas suaves |
+| `--white-dark` | `#f3f4f6` | Fundo de subseções |
+| `--white-light` | `#f9fafb` | Fundo da página |
+| `--red-medium` | `#c54031` | Asterisco de campo obrigatório e erros |
+| `--orange-dark` | `#925c07` | Card de alerta |
+| `--orange-light` | `#faf0e1` | Fundo do card de alerta |
