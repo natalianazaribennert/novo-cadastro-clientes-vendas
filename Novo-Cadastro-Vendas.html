@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="pt-BR" ng-app="cadastroVendasApp">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novo Cadastro – Meu Crediário</title>
+  <!-- jQuery 3.6.0 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- AngularJS 1.6.10 -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --header-bg: #007161;
+      --primary-light: #00856e;
+      --border-accent: #06664f;
+      --text-regular: #6e7697;
+      --border-light: #e5e5e5;
+      --border-medium: #cccccc;
+      --border-dark: #bbbbbb;
+      --text-dark: #333333;
+      --bg-white-dark: #f3f4f6;
+      --bg-white-light: #f9fafb;
+      --orange-bg: #faf0e1;
+      --orange-text: #925c07;
+      --red-required: #c5493b;
+      --white: #ffffff;
+      --font: 'Titillium Web', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg-white-light);
+      min-height: 100vh;
+      padding-top: 55px;
+      padding-bottom: 130px;
+    }
+
+    /* ── Top Bar (fonte: vendas.css oficial) ── */
+    .vendas-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background-color: #007161;
+      height: 55px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      z-index: 100;
+    }
+    .vendas-header .hd-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 150px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @media (max-width: 1439px) { .vendas-header .hd-container { padding: 0 80px; } }
+    @media (max-width: 1199px) { .vendas-header .hd-container { padding: 0 40px; } }
+    .hd-brand { display: flex; align-items: center; gap: 10px; }
+    .hd-logo { width: 100px; height: 25px; display: block; object-fit: contain; object-position: left center; }
+    .hd-divider { border-left: 2px solid #1b7f70; padding-left: 12px; }
+    .hd-title { font-weight: 700; font-size: 20px; color: #f7fafa; line-height: 1; }
+    .hd-nav { display: flex; align-items: center; gap: 10px; }
+    .hd-menu-link { display: flex; align-items: center; gap: 8px; color: #e3f6f3; font-size: 22px; padding: 4px 8px; border-radius: 2px; transition: background 0.15s; }
+    a.hd-menu-link, a.hd-menu-link:link, a.hd-menu-link:visited, a.hd-menu-link:active, a.hd-menu-link:focus { color: #e3f6f3 !important; text-decoration: none !important; outline: none; }
+    a.hd-menu-link:hover { background: rgba(255,255,255,0.1); color: #fff !important; text-decoration: none !important; }
+    .hd-user-btn { background: transparent; border: none; color: #e3f6f3; font-family: var(--font); font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 2px 5px; border-radius: 3px; transition: background 0.15s; max-width: 300px; white-space: nowrap; overflow: hidden; }
+    .hd-user-btn span { overflow: hidden; text-overflow: ellipsis; }
+    .hd-user-btn:hover { background: rgba(255,255,255,0.1); }
+    .hd-id-badge { background-color: #06664f; border-radius: 3px; padding: 3px 8px; display: flex; align-items: center; gap: 5px; color: #f1f6f5; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.15s; user-select: none; white-space: nowrap; }
+    .hd-id-badge:hover { background-color: #055540; }
+    .hd-id-badge .fa-check { color: #fff; }
+    .hd-overlay { position: fixed; inset: 0; z-index: 999; display: none; }
+    .hd-user-wrap { position: relative; }
+    .hd-user-wrap .dropdown-menu { position: absolute; top: 100%; right: 0; left: auto; z-index: 1000; display: none; min-width: 200px; padding: 5px 0; margin: 2px 0 0; background: #fff; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; box-shadow: 0 6px 12px rgba(0,0,0,0.175); list-style: none; font-family: var(--font); font-size: 14px; }
+    .hd-user-wrap.open .dropdown-menu { display: block; }
+    .hd-user-wrap .dropdown-menu > li > a, .hd-user-wrap .dropdown-menu > li > p { display: block; padding: 8px 10px 3px; color: #333; white-space: nowrap; line-height: 1.43; text-decoration: none; margin: 0; }
+    .hd-user-wrap .dropdown-menu > li > a:hover { background: #f5f5f5; }
+    .hd-user-wrap .dropdown-menu .divider { height: 1px; margin: 9px 0; background: #e5e5e5; }
+    .hd-user-wrap .dropdown-menu li a i, .hd-user-wrap .dropdown-menu li p i { width: 16px; text-align: center; margin-right: 2px; }
+    .hd-modulos-wrap { position: relative; }
+    .hd-modulos-popover { position: absolute; top: calc(100% + 10px); right: 0; background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.13); padding: 14px 16px 16px; z-index: 1000; min-width: 290px; display: none; }
+    .hd-modulos-popover.open { display: block; }
+    .hd-modulos-titulo { font-family: var(--font); font-size: 14px; font-weight: 600; color: #009982; display: block; margin: 0 0 12px 0; }
+    .hd-modulos-grid { display: flex; gap: 12px; }
+    .hd-modulo-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 125px; height: 127px; background: #fff; border: none; border-radius: 2px; padding: 10px 8px; gap: 6px; cursor: pointer; text-decoration: none !important; transition: background 0.15s; overflow: hidden; }
+    .hd-modulo-btn:hover, .hd-modulo-btn:focus { background: #f5f5f5; text-decoration: none !important; }
+    .hd-modulo-img { width: 100%; max-height: 80px; object-fit: contain; object-position: center; opacity: .7; transition: opacity 0.15s; flex-shrink: 0; }
+    .hd-modulo-btn:hover .hd-modulo-img { opacity: 1; }
+    .hd-modulo-label { font-family: var(--font); font-size: 16px; font-weight: 600; color: #009982; text-align: center; line-height: 1.3; flex-shrink: 0; transition: color 0.15s; }
+    .hd-modulo-btn:hover .hd-modulo-label { color: #007160; }
+    .hd-grid-btn { background: transparent; border: none; color: #e3f6f3; font-size: 18px; cursor: pointer; padding: 3px 7px; border-radius: 3px; transition: background 0.15s; }
+    .hd-grid-btn:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── Page layout ── */
+    .page { max-width: 1440px; margin: 0 auto; padding: 0 150px; }
+    @media (max-width: 1439px) { .page { padding: 0 80px; } }
+    @media (max-width: 1199px) { .page { padding: 0 40px; } }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 0 20px;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 400; color: var(--text-regular); }
+
+    .content {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 300px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 75px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card__title {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-regular);
+      display: block;
+      margin-bottom: 16px;
+    }
+
+    /* SituacaoDoCadastro — pills */
+    .status-pills { display: flex; align-items: stretch; gap: 5px; margin-bottom: 10px; }
+    .status-pill-bar { flex: 1; background: var(--bg-white-dark); border-radius: 2px; }
+    .status-pill-badge {
+      padding: 2px 6px; border-radius: 2px;
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      color: #fff; text-transform: uppercase; white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(0,0,0,.16); flex-shrink: 0; line-height: 20px;
+    }
+    .status-pill-badge--incompleto { background: #c54031; }
+    .status-pill-badge--basico     { background: #ed9200; }
+    .status-pill-badge--desejavel  { background: #2e6da4; }
+    .status-pill-badge--completo   { background: #4cae4c; }
+    .status-desc { font-size: 13px; color: var(--text-regular); line-height: 1.5; }
+    .fields-count {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-regular);
+      opacity: .7;
+      margin-top: 14px;
+    }
+
+    /* NavegacaoRapida */
+    .nav-list { display: flex; flex-direction: column; gap: 4px; }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      font-family: var(--font);
+      background: var(--bg-white-dark);
+      font-size: 15px;
+      color: var(--text-regular);
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .nav-item:hover { background: #e8e9ef; }
+    .nav-item--active { background: var(--text-regular) !important; color: #fff; }
+    .nav-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+      background: rgba(110,118,151,.12);
+      color: var(--text-regular);
+      font-weight: 400;
+    }
+    .nav-item--active .nav-num { background: rgba(255,255,255,.2); color: #fff; font-weight: 700; }
+
+    /* Alerta */
+    .alerta-card {
+      background: var(--orange-bg);
+      border: 1px solid var(--orange-text);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .alerta-card__header { display: flex; align-items: center; gap: 5px; }
+    .alerta-card__icon { font-size: 16px; color: var(--orange-text); flex-shrink: 0; line-height: 1; }
+    .alerta-card__title { font-size: 14px; font-weight: 600; color: var(--orange-text); line-height: normal; }
+    .alerta-card__body { font-size: 12px; color: var(--orange-text); line-height: normal; }
+
+    /* ── Form area ── */
+    .form-area { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+
+    /* FormSection */
+    .form-section {
+      background: var(--white);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .section-title { font-size: 18px; font-weight: 400; color: var(--text-regular); }
+
+    /* Subseção cinza */
+    .subsection {
+      background: var(--bg-white-dark);
+      border-radius: 5px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .subsection__label { font-size: 15px; color: var(--text-regular); }
+
+    /* Separador com linha */
+    .section-sep { display: flex; align-items: center; gap: 12px; }
+    .section-sep__label { font-size: 15px; color: var(--text-regular); white-space: nowrap; }
+    .section-sep__line { flex: 1; height: 1px; background: var(--border-light); }
+
+    /* Field row */
+    .field-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+
+    /* Field */
+    .field { display: flex; flex-direction: column; min-width: 0; position: relative; }
+    .field label {
+      font-size: 13px;
+      color: var(--text-regular);
+      margin-bottom: 4px;
+      line-height: 20px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--font);
+      display: block;
+    }
+    .field label .req { color: var(--red-required); margin-left: 1px; }
+
+    /* Input control */
+    .ctrl {
+      display: flex;
+      align-items: center;
+      height: 34px;
+      border: 1px solid var(--border-medium);
+      border-radius: 2px;
+      background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      overflow: hidden;
+    }
+    .ctrl:not(.ctrl--disabled):focus-within {
+      border-color: #337ab7;
+      box-shadow: 0 2px 4px 0 rgba(0,102,171,0.34);
+    }
+    .ctrl--select { border-color: var(--border-dark); }
+    .ctrl--disabled { background: var(--bg-white-light); opacity: .7; cursor: not-allowed; }
+    .ctrl--disabled input,
+    .ctrl--disabled select { cursor: not-allowed; }
+    .ctrl--date-erro { border-color: #d9534f !important; }
+    .ctrl--date-erro input { color: #d9534f !important; }
+    .field-msg { font-family: var(--font); font-size: 12px; line-height: 1.3; margin-top: 3px; display: block; }
+    .field-msg--erro  { color: #c54031; }
+    .field-msg--aviso { color: #cccccc; }
+
+    .ctrl input,
+    .ctrl select {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: 12px;
+      color: var(--text-dark);          /* texto digitado é escuro */
+      background: transparent;
+      padding: 0 12px;
+      height: 100%;
+    }
+    .ctrl input::placeholder { color: var(--border-medium); }
+    .ctrl select { color: #555; padding-right: 28px; appearance: none; -webkit-appearance: none; }
+    .ctrl select:invalid,
+    .ctrl select option[value=""] { color: var(--border-medium); }
+
+    /* Search icon inside ctrl */
+    .ctrl__icon { flex-shrink: 0; padding-left: 10px; color: #888; display: flex; align-items: center; }
+    .ctrl__icon + input { padding-left: 6px; }
+
+    /* Autocomplete dropdown */
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border: 1px solid var(--border-medium);
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 200;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.09);
+      display: none;
+    }
+    .autocomplete-list.open { display: block; }
+    .autocomplete-item {
+      padding: 7px 12px;
+      font-family: var(--font);
+      font-size: 12px;
+      color: var(--text-dark);
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-light);
+      line-height: 1.4;
+    }
+    .autocomplete-item:last-child { border-bottom: none; }
+    .autocomplete-item:hover,
+    .autocomplete-item--active { background: var(--bg-white-dark); }
+    .autocomplete-item--empty { color: var(--text-regular); cursor: default; font-style: italic; }
+    .autocomplete-item--loading { color: var(--text-regular); cursor: default; }
+    .autocomplete-item--error { color: var(--red-required); cursor: default; }
+    .autocomplete-cep-sub { display: block; font-size: 11px; color: var(--text-regular); margin-top: 2px; }
+    /* Highlight mark — fundo amarelo-verde como no sistema em produção */
+    .ac-mark { background: rgba(198,240,80,0.65); border-radius: 2px; padding: 0 1px; font-style: normal; }
+    /* Loading spinner no ctrl__icon */
+    @keyframes ac-spin { to { transform: rotate(360deg); } }
+    .ctrl--loading .ctrl__icon svg { display: none; }
+    .ctrl--loading .ctrl__icon::after {
+      content: '';
+      display: block;
+      width: 12px; height: 12px;
+      border: 2px solid #e0e0e0;
+      border-top-color: #888;
+      border-radius: 50%;
+      animation: ac-spin 0.65s linear infinite;
+    }
+
+    /* Chevron inside ctrl */
+    .ctrl__chevron { flex-shrink: 0; padding-right: 10px; pointer-events: none; color: #888; display: flex; align-items: center; }
+
+    /* Salary suffix badge */
+    .ctrl__suffix {
+      height: 100%;
+      padding: 0 10px;
+      border-left: 1px solid var(--border-medium);
+      background: var(--border-light);
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-dark);
+      flex-shrink: 0;
+    }
+
+    /* Botão secundário */
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      height: 35px; padding: 5px 12px;
+      background: var(--white);
+      border: 1px solid var(--border-medium);
+      border-radius: 2px;
+      cursor: pointer;
+      font-family: var(--font); font-size: 14px; font-weight: 400; color: var(--text-dark);
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .btn-secondary:hover { background: #e5e5e5; }
+    .btn-secondary__icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px; line-height: 1;
+    }
+
+    /* Botão de perigo (excluir) */
+    .btn-danger {
+      display: inline-flex; align-items: center; gap: 6px;
+      height: 34px; padding: 0 12px;
+      background: #d9534f; border: 1px solid #c54031; border-radius: 2px;
+      cursor: pointer;
+      font-family: var(--font); font-size: 14px; color: #fff;
+      white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .btn-danger:hover { background: #c54031; border-color: #c54031; }
+
+    /* Observações — dinâmico */
+    .obs-container { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+    .obs-input-label { font-size: 14px; color: var(--text-regular); font-family: var(--font); margin-bottom: 4px; display: block; }
+    .obs-tags-section { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    .obs-tags-header { display: flex; align-items: center; gap: 10px; }
+    .obs-tags-label { font-size: 14px; color: var(--text-regular); white-space: nowrap; flex-shrink: 0; font-family: var(--font); }
+    .obs-tags-line { flex: 1; height: 1px; background: var(--border-light); }
+    .obs-tags-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .obs-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--bg-white-dark); padding: 2px 5px;
+      border-radius: 2px; border: none; cursor: pointer;
+      font-family: var(--font); font-size: 14px; color: var(--text-regular);
+      white-space: nowrap; line-height: normal;
+    }
+    .obs-tag:hover { background: #e5e5e5; }
+    .obs-tag__icon { font-size: 10px; line-height: 1; flex-shrink: 0; }
+    .btn-cancel-obs {
+      align-self: flex-end;
+      background: none; border: none; cursor: pointer; padding: 0;
+      font-family: var(--font); font-size: 14px; color: #2e6da4; line-height: normal;
+    }
+    .btn-cancel-obs:hover { text-decoration: underline; }
+
+    /* Referências — blocos dinâmicos */
+    #ref-lista { display: flex; flex-direction: column; gap: 20px; }
+    .ref-block { display: flex; flex-direction: column; gap: 12px; }
+    .ref-sep { display: flex; align-items: center; gap: 12px; }
+    .ref-sep__label { font-size: 14px; color: var(--text-regular); white-space: nowrap; }
+    .ref-sep__line { flex: 1; height: 1px; background: var(--border-light); }
+    .ref-fields { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; }
+
+    .section-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .empty-text { font-size: 14px; color: var(--text-regular); opacity: .7; }
+
+    /* ── Footer ── */
+    .footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      border-top: 1px solid #e1e1e1;
+      display: flex;
+      align-items: center;
+      padding: 20px 0;
+      z-index: 100;
+    }
+    .footer__inner {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 150px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    @media (max-width: 1439px) { .footer__inner { padding: 0 80px; } }
+    @media (max-width: 1199px) { .footer__inner { padding: 0 40px; } }
+    .footer__left { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .footer__right { display: flex; align-items: flex-start; gap: 10px; }
+    .footer__action { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+    .footer__key { font-size: 14px; color: #bbb; }
+
+    .btn-cancel {
+      height: 35px; padding: 5px 12px;
+      background: var(--white); border: 1px solid var(--border-medium); border-radius: 2px; cursor: pointer;
+      font-family: var(--font); font-size: 16px; color: var(--text-dark);
+      transition: background 0.15s;
+    }
+    .btn-cancel:hover { background: #e5e5e5; }
+    .btn-action {
+      height: 35px; padding: 5px 12px;
+      background: var(--border-medium); border: 1px solid transparent; border-radius: 2px;
+      font-family: var(--font); font-size: 16px; color: var(--white);
+      cursor: not-allowed; opacity: .5;
+      transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+    }
+    .btn-action.enabled { opacity: 1; cursor: pointer; }
+
+    /* Analisar — override de transition (gradiente não interpola, causaria piscar) */
+    .btn-analisar { transition: opacity 0.2s; }
+    .btn-analisar.enabled {
+      background: linear-gradient(133.99deg, #06664f 16.122%, #0cb986 83.878%);
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+    /* Overlay sólido que faz o hover: opacity transition é suave mesmo sobre gradiente */
+    .btn-analisar.enabled::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #06664f;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+    .btn-analisar.enabled:hover::before { opacity: 1; }
+    /* Garante que o texto fica acima do overlay */
+    .btn-analisar span { position: relative; z-index: 1; }
+
+    /* Vender — estilos ativos definidos via JS em updateCount() */
+
+    .btn-save {
+      height: 35px; padding: 5px 12px;
+      background: var(--white); border: 1px solid var(--border-medium); border-radius: 2px;
+      font-family: var(--font); font-size: 16px; color: #bbb;
+      cursor: not-allowed;
+      transition: color 0.2s;
+    }
+    .btn-save.enabled { color: var(--text-dark); cursor: pointer; transition: background 0.15s; }
+    .btn-save.enabled:hover { background: #e5e5e5; }
+
+    /* ── Espelho do cliente modal ── */
+    .espelho-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.2);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .espelho-overlay.open { display: flex; }
+    .espelho-modal {
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 10px;
+      width: 774px;
+      max-width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .espelho-header {
+      padding: 19px 19px 19px 19px;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+      border-radius: 10px 10px 0 0;
+    }
+    .espelho-header-title { font-size: 16px; font-weight: 600; color: #333; line-height: 1.4; }
+    .espelho-header-sub { font-size: 14px; font-weight: 400; color: #333; margin-top: 2px; }
+    .espelho-header-actions { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+    .espelho-btn-salvar {
+      display: flex; align-items: center; gap: 5px;
+      height: 35px; padding: 0 12px;
+      background: #fff; border: 1px solid #ccc; border-radius: 2px;
+      font-family: var(--font); font-size: 14px; color: #333;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .espelho-btn-salvar:hover { background: #f5f5f5; }
+    .espelho-btn-x {
+      background: none; border: none; font-size: 18px; color: #888;
+      cursor: pointer; line-height: 1; padding: 0 4px;
+      transition: color 0.15s;
+    }
+    .espelho-btn-x:hover { color: #333; }
+    .espelho-body {
+      flex: 1; overflow-y: auto;
+      padding: 20px;
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .espelho-section { display: flex; flex-direction: column; gap: 10px; }
+    .espelho-section-title { font-size: 16px; font-weight: 600; color: #333; }
+    .espelho-subsection { display: flex; align-items: center; gap: 12px; opacity: .7; }
+    .espelho-subsection span { font-size: 14px; color: #333; white-space: nowrap; }
+    .espelho-subsection-line { flex: 1; height: 1px; background: #e5e5e5; }
+    .espelho-grid { display: flex; flex-wrap: wrap; gap: 10px 30px; }
+    .espelho-field { display: flex; flex-direction: column; min-width: 100px; }
+    .espelho-field-label { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 2px; }
+    .espelho-field-value { font-size: 14px; font-weight: 400; color: #333; }
+    .espelho-field-value.empty { color: #333; font-style: normal; font-weight: 400; }
+    .espelho-divider { border: none; border-top: 1px solid #e5e5e5; margin: 0; }
+    .espelho-fin-wrapper { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; width: 100%; }
+    .espelho-financeiro {
+      background: #f3f4f6; border: 1px solid #e5e5e5; border-radius: 4px;
+      padding: 10px 20px; width: 100%; box-sizing: border-box;
+      display: flex; flex-direction: column; align-items: center; gap: 20px; align-self: stretch;
+    }
+    .espelho-fin-row { display: flex; flex-direction: row; align-items: center; gap: 51px; align-self: stretch; }
+    .espelho-fin-cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0; }
+    .espelho-fin-cell-title { font-size: 14px; font-weight: 600; color: #333; text-align: center; }
+    .espelho-fin-cell-sub { font-size: 12px; font-weight: 400; color: #333; text-align: center; }
+    .espelho-fin-cell-total { font-size: 14px; font-weight: 600; color: #333; text-align: center; }
+    .espelho-fin-note { font-family: var(--font); font-size: 14px; font-weight: 400; font-style: normal; color: #333; text-align: center; align-self: stretch; line-height: normal; }
+    .espelho-footer {
+      padding: 14px 19px;
+      border-top: 1px solid #e5e5e5;
+      flex-shrink: 0;
+      border-radius: 0 0 10px 10px;
+    }
+    .espelho-btn-fechar {
+      height: 34px; padding: 0 14px;
+      background: #fff; border: 1px solid #ccc; border-radius: 2px;
+      font-family: var(--font); font-size: 14px; color: #333;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .espelho-btn-fechar:hover { background: #f5f5f5; }
+
+    /* ── Print ── */
+    @media print {
+      body > *:not(.espelho-overlay) { display: none !important; }
+      .espelho-overlay { position: static !important; background: none !important; display: block !important; padding: 0; }
+      .espelho-modal { box-shadow: none; max-height: none; border: none; width: 100%; }
+      .espelho-header-actions, .espelho-footer { display: none !important; }
+      .espelho-body { overflow: visible; }
+    }
+  </style>
+</head>
+<body ng-controller="CadastroCtrl">
+
+  <!-- HEADER -->
+  <header class="vendas-header">
+    <div class="hd-container">
+
+      <div class="hd-brand">
+        <a href="#" class="hd-logo-link">
+          <img src="data:image/png;base64,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" alt="Meu Crediário" class="hd-logo">
+        </a>
+        <div class="hd-divider">
+          <span class="hd-title">Vendas</span>
+        </div>
+      </div>
+
+      <nav class="hd-nav">
+        <a href="#" class="hd-menu-link">
+          <i class="fas fa-bars"></i>
+          <span>MENU</span>
+        </a>
+
+        <div class="hd-overlay" id="hd-overlay" ng-click="fecharTudo()"></div>
+
+        <div class="hd-user-wrap" id="hd-user-wrap">
+          <button class="hd-user-btn" ng-click="toggleDropdown()">
+            <span id="hd-store-name"></span>&nbsp;<i class="fas fa-caret-down"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li><p><i class="fas fa-user-circle"></i>&nbsp;<span id="hd-user-name"></span></p></li>
+            <li><a href="#"><i class="fas fa-building"></i>&nbsp;Minha loja</a></li>
+            <li class="divider"></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>&nbsp;Sair</a></li>
+          </ul>
+        </div>
+
+        <div class="hd-id-badge" ng-click="copiarId()" title="Copiar ID">
+          <svg id="hd-id-icon" width="17.5" height="14" viewBox="0 0 17.5 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.375 12.25V13.3438C11.375 13.7266 11.0742 14 10.7188 14H3.28125C2.89844 14 2.625 13.7266 2.625 13.3438V3.28125C2.625 2.92578 2.89844 2.625 3.28125 2.625H5.25V10.7188C5.25 11.5664 5.93359 12.25 6.78125 12.25H11.375ZM11.375 2.84375C11.375 3.22656 11.6484 3.5 12.0312 3.5H14.875V10.7188C14.875 11.1016 14.5742 11.375 14.2188 11.375H6.78125C6.39844 11.375 6.125 11.1016 6.125 10.7188V0.65625C6.125 0.300781 6.39844 0 6.78125 0H11.375V2.84375ZM14.6562 1.99609C14.793 2.13281 14.875 2.29688 14.875 2.46094V2.625H12.25V0H12.4141C12.5781 0 12.7422 0.0820312 12.8789 0.21875L14.6562 1.99609Z" fill="#F1F6F5"/>
+          </svg>
+          <i id="hd-id-check" class="fas fa-check" style="display:none"></i>
+          <span id="hd-store-id"></span>
+        </div>
+
+        <div class="hd-modulos-wrap" id="hd-modulos-wrap">
+          <button class="hd-grid-btn" ng-click="toggleModulos()">
+            <svg width="25.71" height="18" viewBox="0 0 30 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.875 0H25.875C26.4844 0 27 0.515625 27 1.125V8.625C27 9.28125 26.4844 9.75 25.875 9.75H16.875C16.2188 9.75 15.75 9.28125 15.75 8.625V1.125C15.75 0.515625 16.2188 0 16.875 0ZM13.125 0C13.7344 0 14.25 0.515625 14.25 1.125V8.625C14.25 9.28125 13.7344 9.75 13.125 9.75H4.125C3.46875 9.75 3 9.28125 3 8.625V1.125C3 0.515625 3.46875 0 4.125 0H13.125ZM3 12.375C3 11.7656 3.46875 11.25 4.125 11.25H13.125C13.7344 11.25 14.25 11.7656 14.25 12.375V19.875C14.25 20.5312 13.7344 21 13.125 21H4.125C3.46875 21 3 20.5312 3 19.875V12.375ZM16.875 21C16.2188 21 15.75 20.5312 15.75 19.875V12.375C15.75 11.7656 16.2188 11.25 16.875 11.25H25.875C26.4844 11.25 27 11.7656 27 12.375V19.875C27 20.5312 26.4844 21 25.875 21H16.875Z" fill="#E3F6F3"/>
+            </svg>
+          </button>
+          <div class="hd-modulos-popover" id="hd-modulos-popover">
+            <p class="hd-modulos-titulo">MÓDULOS</p>
+            <div class="hd-modulos-grid" id="hd-modulos-grid"></div>
+          </div>
+        </div>
+      </nav>
+
+    </div>
+  </header>
+
+  <div class="page">
+    <!-- Page header -->
+    <div class="page-header">
+      <h1>Novo cadastro</h1>
+      <button class="btn-secondary" ng-click="abrirEspelho()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="14" viewBox="0 0 15 14" fill="none">
+          <g clip-path="url(#clip0_996_7004)">
+            <path d="M7.879 3.72055L7.875 0.00180574L2.40625 0.00335632C2.32001 0.00314986 2.23459 0.0199909 2.1549 0.0529113C2.07521 0.0858318 2.00282 0.134182 1.9419 0.195184C1.88099 0.256186 1.83273 0.328636 1.79992 0.408369C1.76711 0.488103 1.75038 0.573547 1.75071 0.659792L1.76433 13.3473C1.76419 13.4335 1.7811 13.519 1.81409 13.5987C1.84707 13.6784 1.89548 13.7508 1.95653 13.8118C2.01758 13.8728 2.09006 13.9211 2.16982 13.9539C2.24958 13.9868 2.33504 14.0036 2.42129 14.0033L11.6088 14.0007C11.695 14.0009 11.7805 13.9841 11.8601 13.9512C11.9398 13.9183 12.0122 13.8699 12.0731 13.8089C12.1341 13.7479 12.1823 13.6755 12.2151 13.5957C12.2479 13.516 12.2647 13.4306 12.2643 13.3443L12.2547 4.37556L8.53595 4.37662C8.36204 4.3762 8.19532 4.30696 8.07222 4.18403C7.94911 4.06109 7.87964 3.89446 7.879 3.72055ZM9.63593 10.1732C9.63579 10.2601 9.60123 10.3435 9.53981 10.405C9.47839 10.4665 9.39511 10.5011 9.30815 10.5014L4.7144 10.5027C4.62745 10.5025 4.54409 10.4679 4.48254 10.4064C4.42098 10.3449 4.38625 10.2616 4.38593 10.1747L4.38569 9.95592C4.38583 9.86896 4.42038 9.78563 4.4818 9.72413C4.54322 9.66262 4.62651 9.62796 4.71346 9.6277L9.30721 9.6264C9.39417 9.6266 9.47753 9.66122 9.53908 9.72269C9.60063 9.78416 9.63537 9.86748 9.63569 9.95443L9.63593 10.1732ZM9.63405 8.42318C9.63391 8.51013 9.59935 8.59347 9.53793 8.65497C9.47652 8.71647 9.39323 8.75114 9.30627 8.7514L4.71252 8.7527C4.62557 8.75249 4.54221 8.71787 4.48066 8.65641C4.4191 8.59494 4.38437 8.51162 4.38405 8.42467L4.38381 8.20592C4.38395 8.11897 4.4185 8.03563 4.47992 7.97413C4.54134 7.91262 4.62463 7.87796 4.71158 7.8777L9.30533 7.8764C9.39229 7.8766 9.47565 7.91123 9.5372 7.97269C9.59875 8.03416 9.63349 8.11748 9.63381 8.20443L9.63405 8.42318ZM9.63193 6.45443L9.63217 6.67318C9.63203 6.76013 9.59747 6.84347 9.53606 6.90497C9.47464 6.96648 9.39135 7.00114 9.30439 7.0014L4.71064 7.0027C4.62369 7.0025 4.54033 6.96787 4.47878 6.90641C4.41723 6.84494 4.38249 6.76162 4.38217 6.67467L4.38193 6.45592C4.38207 6.36897 4.41662 6.28563 4.47804 6.22413C4.53946 6.16263 4.62275 6.12796 4.7097 6.1277L9.30345 6.1264C9.39041 6.12661 9.47377 6.16123 9.53532 6.22269C9.59687 6.28416 9.63161 6.36748 9.63193 6.45443ZM12.2536 3.33344L12.2538 3.50056L8.75376 3.50156L8.75 0.00155765L8.91713 0.00151027C9.00337 0.00128405 9.08883 0.0180827 9.16859 0.0509431C9.24836 0.0838036 9.32087 0.13208 9.38196 0.193003L12.0615 2.87237C12.1839 2.99468 12.253 3.16045 12.2536 3.33344Z" fill="#333333"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_996_7004">
+              <rect width="14" height="14" fill="white" transform="matrix(1 -0.000283533 0.00107386 0.999999 0 0.00402832)"/>
+            </clipPath>
+          </defs>
+        </svg>
+        Espelho do cliente
+      </button>
+    </div>
+
+    <div class="content">
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar">
+        <div class="card">
+          <span class="card__title">Situação do cadastro</span>
+          <div>
+            <div id="status-pills" class="status-pills"></div>
+            <p class="status-desc" id="status-desc">O cadastro ainda não possui informações suficientes para a análise.</p>
+          </div>
+          <div class="fields-count">
+            <span>Campos preenchidos</span>
+            <span id="fields-count">0/<span id="fields-total">0</span></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="card__title">Navegação rápida</span>
+          <nav class="nav-list">
+            <button class="nav-item nav-item--active" ng-click="scrollToSection('sec-identificacao',$event)"><span class="nav-num">1</span>Identificação</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-endereco',$event)"><span class="nav-num">2</span>Endereço</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-contato',$event)"><span class="nav-num">3</span>Contato</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-ocupacao',$event)"><span class="nav-num">4</span>Ocupação</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-referencias',$event)"><span class="nav-num">5</span>Referências</button>
+            <button class="nav-item" ng-click="scrollToSection('sec-observacoes',$event)"><span class="nav-num">6</span>Observações</button>
+          </nav>
+        </div>
+
+        <div class="alerta-card">
+          <div class="alerta-card__header">
+            <i class="fa-solid fa-file-circle-exclamation alerta-card__icon"></i>
+            <span class="alerta-card__title">Revise os dados com o cliente</span>
+          </div>
+          <p class="alerta-card__body">Confirme se todas as informações estão corretas antes de finalizar o cadastro.</p>
+        </div>
+      </aside>
+
+      <!-- ── Form ── -->
+      <main class="form-area">
+
+        <!-- Identificação -->
+        <section id="sec-identificacao" class="form-section">
+          <span class="section-title">Identificação</span>
+
+          <div class="subsection">
+            <span class="subsection__label">Informações pessoais</span>
+            <div class="field-row">
+              <div class="field" style="flex:180">
+                <label>CPF<span class="req">*</span></label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': cpfVal.cpf.erro}"><input id="f-cpf" ng-model="form.cpf" mascara="cpf" type="tel" placeholder="000.000.000-00" maxlength="14"></div>
+                <span class="field-msg field-msg--erro" ng-show="cpfVal.cpf.erro" ng-bind="cpfVal.cpf.msg"></span>
+              </div>
+              <div class="field" style="flex:340">
+                <label>Nome completo<span class="req">*</span></label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': nomeVal.nome.erro}"><input id="f-nome" ng-model="form.nome" mascara="nome" type="text" placeholder="Digite o nome completo do cliente" ng-blur="validateNomeBlur()"></div>
+                <span class="field-msg field-msg--erro" ng-show="nomeVal.nome.erro" ng-bind="nomeVal.nome.msg"></span>
+              </div>
+              <div class="field" style="flex:180">
+                <label>Data de nascimento</label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.nasc.erro}"><input id="f-nascimento" ng-model="form.nascimento" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10"></div>
+                <span class="field-msg field-msg--erro"  ng-show="dateVal.nasc.erro"  ng-bind="dateVal.nasc.msg"></span>
+                <span class="field-msg field-msg--aviso" ng-show="dateVal.nasc.aviso" ng-bind="dateVal.nasc.msg"></span>
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field" style="flex:1">
+                <label>Número do RG</label>
+                <div class="ctrl"><input id="f-rg" ng-model="form.rg" mascara="rg" type="tel" placeholder="00.000.000-0" maxlength="12"></div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Órgão emissor do RG</label>
+                <div class="ctrl ctrl--select">
+                  <select id="f-rg-orgao" ng-model="form.rgOrgao">
+                    <option value="">Selecione</option>
+                    <option>SSP</option><option>DETRAN</option><option>PM</option><option>CRM</option><option>OAB</option><option>Outro</option>
+                  </select>
+                  <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                </div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Estado emissor do RG</label>
+                <div class="ctrl ctrl--select">
+                  <select id="f-rg-estado" ng-model="form.rgEstado">
+                    <option value="">Selecione</option>
+                    <option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option>
+                  </select>
+                  <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                </div>
+              </div>
+              <div class="field" style="flex:1">
+                <label>Data de emissão do RG</label>
+                <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.rgEmissao.erro}"><input id="f-rg-emissao" ng-model="form.rgEmissao" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10"></div>
+                <span class="field-msg field-msg--erro" ng-show="dateVal.rgEmissao.erro" ng-bind="dateVal.rgEmissao.msg"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-sep"><span class="section-sep__label">Informações complementares</span><div class="section-sep__line"></div></div>
+          <div class="field-row">
+            <div class="field" style="flex:192">
+              <label>Gênero</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-genero" ng-model="form.genero"><option value="">Selecione</option><option>Feminino</option><option>Masculino</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:248">
+              <label>Nome completo da mãe</label>
+              <div class="ctrl"><input id="f-mae" ng-model="form.mae" mascara="nome" type="text" placeholder="Nome completo da mãe do cliente"></div>
+            </div>
+            <div class="field" style="flex:278">
+              <label>Nome completo do pai</label>
+              <div class="ctrl"><input id="f-pai" ng-model="form.pai" mascara="nome" type="text" placeholder="Nome completo do pai do cliente"></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex:192">
+              <label>Nível de escolaridade</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-escolaridade" ng-model="form.escolaridade"><option value="">Selecione</option><option>Sem escolaridade</option><option>Fund. incompleto</option><option>Fund. completo</option><option>Médio incompleto</option><option>Médio completo</option><option>Superior incompleto</option><option>Superior completo</option><option>Pós-graduação</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:270">
+              <label>Possui dependentes?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-dependentes" ng-model="form.dependentes"><option value="">Selecione</option><option>Não possui</option><option>Sim, 1</option><option>Sim, 2</option><option>Sim, 3</option><option>Sim, 4 ou mais</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:129">
+              <label>Possui carro?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-carro" ng-model="form.carro"><option value="">Selecione</option><option>Não possui</option><option>Sim, financiado</option><option>Sim, quitado</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:129">
+              <label>Possui moto?</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-moto" ng-model="form.moto"><option value="">Selecione</option><option>Não possui</option><option>Sim, financiado</option><option>Sim, quitado</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-sep"><span class="section-sep__label">Situação conjugal</span><div class="section-sep__line"></div></div>
+          <div class="field-row" style="flex-wrap:wrap">
+            <div class="field" style="width:192px">
+              <label>Estado civil atual</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-estado-civil" ng-model="form.estadoCivil" ng-change="toggleConjuge(form.estadoCivil)"><option value="">Selecione</option><option>Solteiro(a)</option><option>Casado(a)</option><option>União estável</option><option>Divorciado(a)</option><option>Viúvo(a)</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <!-- Campos do cônjuge — visíveis apenas quando Casado(a) ou União estável -->
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:180px">
+              <label>CPF do cônjuge</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': cpfVal.cpfConj.erro}"><input id="f-cpf-conjuge" ng-model="form.cpfConjuge" mascara="cpf" type="tel" placeholder="000.000.000-00" maxlength="14" ng-disabled="!exibeConjuge"></div>
+              <span class="field-msg field-msg--erro" ng-show="cpfVal.cpfConj.erro" ng-bind="cpfVal.cpfConj.msg"></span>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="flex:1;min-width:300px">
+              <label>Nome completo do cônjuge</label>
+              <div class="ctrl"><input id="f-nome-conjuge" ng-model="form.nomeConjuge" mascara="nome" type="text" placeholder="Digite o nome completo do cônjuge do cliente" ng-disabled="!exibeConjuge"></div>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:192px">
+              <label>Data de nascimento do cônjuge</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': dateVal.nascConj.erro}"><input id="f-nasc-conjuge" ng-model="form.nascConjuge" mascara="date" type="tel" placeholder="DD/MM/AAAA" maxlength="10" ng-disabled="!exibeConjuge"></div>
+              <span class="field-msg field-msg--erro" ng-show="dateVal.nascConj.erro" ng-bind="dateVal.nascConj.msg"></span>
+            </div>
+            <div class="field conjuge-field" ng-show="exibeConjuge" style="width:180px">
+              <label>Celular do cônjuge</label>
+              <div class="ctrl"><input id="f-cel-conjuge" ng-model="form.celConjuge" mascara="phone" type="tel" placeholder="(99) 99999-9999" maxlength="15" ng-disabled="!exibeConjuge"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Endereço -->
+        <section id="sec-endereco" class="form-section">
+          <span class="section-title">Endereço</span>
+          <div class="field-row">
+            <!-- Cidade — autocomplete IBGE -->
+            <div class="field" style="flex:246">
+              <label>Cidade</label>
+              <div class="ctrl" id="ctrl-cidade">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="inp-cidade" ng-model="form.cidade" type="text" placeholder="Digite para buscar a cidade" autocomplete="off">
+              </div>
+              <div id="lista-cidade" class="autocomplete-list"></div>
+            </div>
+            <!-- CEP ou Rua — autocomplete ViaCEP -->
+            <div class="field" style="flex:248">
+              <label>CEP ou Rua</label>
+              <div class="ctrl ctrl--disabled" id="ctrl-cep">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="inp-cep" ng-model="form.cep" type="text" placeholder="CEP (00000-000) ou nome da rua" disabled autocomplete="off">
+              </div>
+              <div id="lista-cep" class="autocomplete-list"></div>
+            </div>
+            <!-- Logradouro — preenchido via API, editável -->
+            <div class="field" style="flex:246">
+              <label>Logradouro</label>
+              <div class="ctrl ctrl--disabled"><input id="f-logradouro" ng-model="form.logradouro" class="addr-dep" type="text" placeholder="Rua, avenida, etc." disabled></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <!-- Número — liberado ao selecionar cidade -->
+            <div class="field" style="flex:90">
+              <label>Número</label>
+              <div class="ctrl ctrl--disabled"><input id="f-numero" ng-model="form.numero" class="addr-cidade" type="tel" placeholder="Ex: 123" disabled></div>
+            </div>
+            <div class="field" style="flex:136">
+              <label>Bairro</label>
+              <div class="ctrl ctrl--disabled"><input id="f-bairro" ng-model="form.bairro" class="addr-dep" type="text" placeholder="Nome do bairro" disabled></div>
+            </div>
+            <div class="field" style="flex:248">
+              <label>Complemento</label>
+              <div class="ctrl ctrl--disabled"><input id="f-complemento" ng-model="form.complemento" class="addr-dep" type="text" placeholder="Apto, bloco, casa…" disabled></div>
+            </div>
+            <div class="field" style="flex:246">
+              <label>Referência</label>
+              <div class="ctrl ctrl--disabled"><input id="f-referencia-end" ng-model="form.referenciaEnd" class="addr-dep" type="text" placeholder="Ex: Próximo ao mercado" disabled></div>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field" style="flex: 0 0 calc((100% - 32px) / 3); min-width: 0">
+              <label>Tempo de residência</label>
+              <div class="ctrl ctrl--select ctrl--disabled">
+                <select id="f-tempo-residencia" ng-model="form.tempoResidencia" class="addr-dep" disabled><option value="">Selecione</option><option>Menos de 1 ano</option><option>1 a 2 anos</option><option>2 a 5 anos</option><option>5 a 10 anos</option><option>Mais de 10 anos</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex: 0 0 calc((100% - 32px) / 3); min-width: 0">
+              <label>Situação da residência</label>
+              <div class="ctrl ctrl--select ctrl--disabled">
+                <select id="f-situacao-residencia" ng-model="form.situacaoResidencia" class="addr-dep" disabled><option value="">Selecione</option><option>Alugada</option><option>Própria quitada</option><option>Própria financiada</option><option>Mora com os pais</option><option>Residência funcional</option><option>Outro</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contato -->
+        <section id="sec-contato" class="form-section">
+          <span class="section-title">Contato</span>
+          <div class="field-row">
+            <div class="field" style="flex:125">
+              <label>Celular</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.celular.erro}"><input id="f-celular" ng-model="form.celular" mascara="phone" type="tel" placeholder="(99) 99999-9999" maxlength="15" ng-blur="validatePhoneBlur('celular', 15)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.celular.erro" ng-bind="phoneVal.celular.msg"></span>
+            </div>
+            <div class="field" style="flex:200">
+              <label>E-mail</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': emailVal.email.erro}"><input id="f-email" ng-model="form.email" type="text" placeholder="email@exemplo.com" ng-blur="validateEmailBlur()"></div>
+              <span class="field-msg field-msg--erro" ng-show="emailVal.email.erro" ng-bind="emailVal.email.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Telefone residencial</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.telRes.erro}"><input id="f-tel-res" ng-model="form.telRes" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('telRes', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.telRes.erro" ng-bind="phoneVal.telRes.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Telefone comercial</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.telCom.erro}"><input id="f-tel-com" ng-model="form.telCom" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('telCom', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.telCom.erro" ng-bind="phoneVal.telCom.msg"></span>
+            </div>
+            <div class="field" style="flex:125">
+              <label>Outro telefone</label>
+              <div class="ctrl" ng-class="{'ctrl--date-erro': phoneVal.outroTel.erro}"><input id="f-outro-tel" ng-model="form.outroTel" mascara="phone-fix" type="tel" placeholder="(99) 9999-9999" maxlength="14" ng-blur="validatePhoneBlur('outroTel', 14)"></div>
+              <span class="field-msg field-msg--erro" ng-show="phoneVal.outroTel.erro" ng-bind="phoneVal.outroTel.msg"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ocupação -->
+        <section id="sec-ocupacao" class="form-section">
+          <span class="section-title">Ocupação</span>
+          <div class="field-row">
+            <div class="field" style="flex:237;min-width:0">
+              <label>Profissão</label>
+              <div class="ctrl" id="ctrl-profissao">
+                <span class="ctrl__icon"><svg width="12" height="12" fill="none"><circle cx="5" cy="5" r="3.5" stroke="#888" stroke-width="1.3"/><path d="M7.5 7.5L10 10" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg></span>
+                <input id="f-profissao" ng-model="form.profissao" type="text" placeholder="Digite para buscar a profissão" autocomplete="off">
+              </div>
+              <div id="lista-profissao" class="autocomplete-list"></div>
+            </div>
+            <div class="field" style="flex:237;min-width:0">
+              <label>Empresa onde trabalha</label>
+              <div class="ctrl"><input id="f-empresa" ng-model="form.empresa" type="text" placeholder="Nome da empresa"></div>
+            </div>
+            <div class="field" style="flex:123;min-width:0">
+              <label>Tempo de empresa</label>
+              <div class="ctrl ctrl--select">
+                <select id="f-tempo-empresa" ng-model="form.tempoEmpresa"><option value="">Selecione</option><option>Menos de 1 ano</option><option>1 a 2 anos</option><option>2 a 5 anos</option><option>5 a 10 anos</option><option>Mais de 10 anos</option></select>
+                <span class="ctrl__chevron"><svg width="12" height="7" fill="none"><path d="M1 1l5 5 5-5" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+              </div>
+            </div>
+            <div class="field" style="flex:123;min-width:0">
+              <label>Salário líquido</label>
+              <div class="ctrl">
+                <input id="f-salario" ng-model="form.salario" mascara="currency" type="tel" placeholder="0,00" style="padding-right:4px">
+                <span class="ctrl__suffix">R$</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Referências -->
+        <section id="sec-referencias" class="form-section">
+          <div class="section-row">
+            <div>
+              <span class="section-title">Referências</span>
+              <p class="empty-text" id="ref-empty-msg" ng-show="referencias.length === 0" style="margin-top:3px">Nenhuma referência adicionada para o cliente.</p>
+            </div>
+            <button class="btn-secondary" id="btn-adicionar-ref" ng-click="adicionarRef()" ng-show="referencias.length < 2">
+              <span class="btn-secondary__icon"><i class="fa-solid fa-user-plus"></i></span>
+              Adicionar referência
+            </button>
+          </div>
+          <div id="ref-lista" ng-show="referencias.length > 0">
+            <div class="ref-block" ng-repeat="ref in referencias track by $index">
+              <div class="ref-sep">
+                <span class="ref-sep__label">Referência {{$index + 1}}</span>
+                <span class="ref-sep__line"></span>
+              </div>
+              <div class="ref-fields">
+                <div class="field" style="flex:1;min-width:120px">
+                  <label>Nome</label>
+                  <div class="ctrl"><input type="text" ng-model="ref.nome" placeholder="Nome completo"></div>
+                </div>
+                <div class="field" style="flex:0 0 140px;min-width:0">
+                  <label>Vínculo</label>
+                  <div class="ctrl ctrl--select">
+                    <select ng-model="ref.vinculo">
+                      <option value="">Selecione</option>
+                      <option ng-repeat="v in vinculoOpts">{{v}}</option>
+                    </select>
+                    <span class="ctrl__chevron"><svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </div>
+                </div>
+                <div class="field" style="flex:0 0 125px;min-width:0">
+                  <label>Celular</label>
+                  <div class="ctrl"><input type="tel" ng-model="ref.celular" mascara="phone" placeholder="(00) 00000-0000"></div>
+                </div>
+                <div class="field" style="flex:0 0 125px;min-width:0">
+                  <label>Telefone</label>
+                  <div class="ctrl"><input type="tel" ng-model="ref.telefone" mascara="phone-fix" placeholder="(00) 0000-0000"></div>
+                </div>
+                <button class="btn-danger" ng-click="removerRef($index)">Excluir referência</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Observações -->
+        <section id="sec-observacoes" class="form-section">
+
+          <!-- Estado: vazio -->
+          <div ng-show="obsState === 'empty'" class="section-row">
+            <div>
+              <span class="section-title">Observações</span>
+              <p class="empty-text" style="margin-top:3px">Nenhuma observação adicionada para o cliente.</p>
+            </div>
+            <button class="btn-secondary" ng-click="obsModoEdicao()">
+              <span class="btn-secondary__icon"><i class="fa-solid fa-magnifying-glass-plus"></i></span>
+              Adicionar observações
+            </button>
+          </div>
+
+          <!-- Estado: editando ou com tags -->
+          <div ng-show="obsState !== 'empty'" class="obs-container">
+            <span class="section-title">Observações</span>
+            <div>
+              <label class="obs-input-label">Observações do cliente</label>
+              <div class="ctrl">
+                <input type="text" id="obs-input" ng-model="obs.texto" ng-keydown="obsKeydown($event)" placeholder="Digite uma observação e pressione ENTER para adicionar como tag..." style="padding:0 15px">
+              </div>
+            </div>
+
+            <!-- Tags adicionadas -->
+            <div class="obs-tags-section" ng-show="obs.tags.length > 0">
+              <div class="obs-tags-header">
+                <span class="obs-tags-label">Tags adicionadas</span>
+                <span class="obs-tags-line"></span>
+              </div>
+              <div class="obs-tags-list">
+                <button class="obs-tag" ng-repeat="tag in obs.tags track by $index" ng-click="obsRemoverTag($index)">
+                  <span>{{tag}}</span>
+                  <i class="fa-solid fa-xmark obs-tag__icon"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cancelar só no estado editing sem tags -->
+            <button class="btn-cancel-obs" ng-show="obsState === 'editing'" ng-click="obsCancelar()">Cancelar</button>
+          </div>
+
+        </section>
+
+      </main>
+    </div><!-- /content -->
+  </div><!-- /page -->
+
+  <!-- ── Espelho do cliente modal ── -->
+  <div class="espelho-overlay" id="espelho-overlay" ng-click="handleEspelhoOverlayClick($event)">
+    <div class="espelho-modal" id="espelho-modal">
+
+      <div class="espelho-header">
+        <div>
+          <div class="espelho-header-title">Espelho do cliente</div>
+          <div class="espelho-header-sub" id="espelho-subtitle">–</div>
+        </div>
+        <div class="espelho-header-actions">
+          <button class="espelho-btn-salvar" ng-click="espelhoImprimir()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 15 14" fill="none">
+              <g clip-path="url(#ec1)"><path d="M7.879 3.72055L7.875 0.00180574L2.40625 0.00335632C2.32001 0.00314986 2.23459 0.0199909 2.1549 0.0529113C2.07521 0.0858318 2.00282 0.134182 1.9419 0.195184C1.88099 0.256186 1.83273 0.328636 1.79992 0.408369C1.76711 0.488103 1.75038 0.573547 1.75071 0.659792L1.76433 13.3473C1.76419 13.4335 1.7811 13.519 1.81409 13.5987C1.84707 13.6784 1.89548 13.7508 1.95653 13.8118C2.01758 13.8728 2.09006 13.9211 2.16982 13.9539C2.24958 13.9868 2.33504 14.0036 2.42129 14.0033L11.6088 14.0007C11.695 14.0009 11.7805 13.9841 11.8601 13.9512C11.9398 13.9183 12.0122 13.8699 12.0731 13.8089C12.1341 13.7479 12.1823 13.6755 12.2151 13.5957C12.2479 13.516 12.2647 13.4306 12.2643 13.3443L12.2547 4.37556L8.53595 4.37662C8.36204 4.3762 8.19532 4.30696 8.07222 4.18403C7.94911 4.06109 7.87964 3.89446 7.879 3.72055ZM9.63593 10.1732C9.63579 10.2601 9.60123 10.3435 9.53981 10.405C9.47839 10.4665 9.39511 10.5011 9.30815 10.5014L4.7144 10.5027C4.62745 10.5025 4.54409 10.4679 4.48254 10.4064C4.42098 10.3449 4.38625 10.2616 4.38593 10.1747L4.38569 9.95592C4.38583 9.86896 4.42038 9.78563 4.4818 9.72413C4.54322 9.66262 4.62651 9.62796 4.71346 9.6277L9.30721 9.6264C9.39417 9.6266 9.47753 9.66122 9.53908 9.72269C9.60063 9.78416 9.63537 9.86748 9.63569 9.95443L9.63593 10.1732ZM9.63405 8.42318C9.63391 8.51013 9.59935 8.59347 9.53793 8.65497C9.47652 8.71647 9.39323 8.75114 9.30627 8.7514L4.71252 8.7527C4.62557 8.75249 4.54221 8.71787 4.48066 8.65641C4.4191 8.59494 4.38437 8.51162 4.38405 8.42467L4.38381 8.20592C4.38395 8.11897 4.4185 8.03563 4.47992 7.97413C4.54134 7.91262 4.62463 7.87796 4.71158 7.8777L9.30533 7.8764C9.39229 7.8766 9.47565 7.91123 9.5372 7.97269C9.59875 8.03416 9.63349 8.11748 9.63381 8.20443L9.63405 8.42318ZM12.2536 3.33344L12.2538 3.50056L8.75376 3.50156L8.75 0.00155765L8.91713 0.00151027C9.00337 0.00128405 9.08883 0.0180827 9.16859 0.0509431C9.24836 0.0838036 9.32087 0.13208 9.38196 0.193003L12.0615 2.87237C12.1839 2.99468 12.253 3.16045 12.2536 3.33344Z" fill="#333333"/></g>
+              <defs><clipPath id="ec1"><rect width="14" height="14" fill="white" transform="matrix(1 -0.000283533 0.00107386 0.999999 0 0.00402832)"/></clipPath></defs>
+            </svg>
+            Salvar
+          </button>
+          <button class="espelho-btn-x" ng-click="fecharEspelho()" title="Fechar">×</button>
+        </div>
+      </div>
+
+      <div class="espelho-body" id="espelho-body">
+        <!-- preenchido via JS -->
+      </div>
+
+      <div class="espelho-footer">
+        <button class="espelho-btn-fechar" ng-click="fecharEspelho()">Fechar</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__left">
+        <button class="btn-cancel">Cancelar</button>
+        <span class="footer__key">Esc</span>
+      </div>
+      <div class="footer__right">
+        <div class="footer__action">
+          <button class="btn-action btn-analisar" id="btn-analisar"><span>Analisar</span></button>
+          <span class="footer__key">Ctrl + A</span>
+        </div>
+        <div class="footer__action">
+          <button class="btn-action btn-vender" id="btn-vender">Vender</button>
+          <span class="footer__key">Ctrl + Enter</span>
+        </div>
+        <div class="footer__action">
+          <button class="btn-save" id="btn-salvar">Apenas salvar</button>
+          <span class="footer__key">Ctrl + S</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Dados dinâmicos (via props/API em produção) ────────────
+    var appData = {
+      storeName: 'Meu Crediário - Módulo de Vendas - Teste',   // TODO: receber da API/props
+      storeId:   '3943',         // TODO: receber da API/props
+      userName:  'Usuário',      // TODO: receber da API/props
+      // TODO: $http.get('/api/financeiro/cliente') — null = sem histórico
+      financeiro: null,
+      // Exemplo com dados:
+      // financeiro: {
+      //   parcelasPagasQtd: 12,    parcelasPagasTotal: '1.440,00',
+      //   parcelasAbertasQtd: 3,   parcelasAbertasTotal: '360,00',
+      //   parcelasVencidasQtd: 1,  parcelasVencidasTotal: '120,00',
+      //   jurosPagos: '18,50',     multasPagas: '6,00',
+      //   mediaCompra: '480,00',   totalComprado: '1.800,00',
+      // },
+    };
+    document.getElementById('hd-store-name').textContent = appData.storeName;
+    document.getElementById('hd-store-id').textContent   = 'ID: ' + appData.storeId;
+    document.getElementById('hd-user-name').textContent  = appData.userName;
+
+    // ── Módulos (via API em produção) ──────────────────────────
+    var modulos = [
+      { titulo: 'Assinatura', img: 'img/ilustracao-assinatura.svg', url: 'https://assinatura.meucrediario.com.br/' },
+      { titulo: 'Cobrança',   img: 'img/ilustracao-cobranca.svg',   url: 'https://cobranca.meucrediario.com.br/'  },
+    ];
+    var modulosGrid = document.getElementById('hd-modulos-grid');
+    modulos.forEach(function(mod) {
+      var a = document.createElement('a');
+      a.className = 'hd-modulo-btn';
+      a.href = mod.url;
+      a.target = '_blank';
+      a.title = 'Módulo ' + mod.titulo;
+      a.innerHTML = '<img class="hd-modulo-img" src="' + mod.img + '" alt="' + mod.titulo + '"><span class="hd-modulo-label">' + mod.titulo + '</span>';
+      modulosGrid.appendChild(a);
+    });
+
+    // ── Navegação ──────────────────────────────────────────────
+    // Estratégia: checkpoint sequencial — ativa a última seção cujo topo
+    // cruzou a linha de referência. Progressão seção-a-seção garantida por
+    // geometria: ir de N para N+2 exige passar pelo ponto onde N+1 cruzou a linha.
+    var _navScrolling = false;
+    var _scrollTarget = null;
+    var _contextualLock = null;  // scrollY da posição quando ação contextual foi disparada
+
+    // Scroll-spy: checkpoint sequencial com limiar assimétrico por direção
+    (function() {
+      var SECTION_IDS    = ['sec-identificacao','sec-endereco','sec-contato','sec-ocupacao','sec-referencias','sec-observacoes'];
+      var HEADER_H       = 75;
+      var ENTRY_LINE     = HEADER_H + 30;  // 105px — descendo: ativa ao ver ~1 campo novo
+      var BACK_THRESHOLD = HEADER_H + 140; // 215px — subindo: só troca quando ~3 campos da seção anterior estão visíveis
+      var navBtns   = null;
+      var ticking   = false;
+      var activeIdx = 0;
+
+      function setActive(idx) {
+        activeIdx = idx;
+        navBtns.forEach(function(b, i) { b.classList.toggle('nav-item--active', i === idx); });
+      }
+
+      function updateNav() {
+        ticking = false;
+
+        // Liberação antecipada: se chegamos perto do alvo, solta o flag sem esperar o timeout
+        if (_navScrolling && _scrollTarget !== null) {
+          if (Math.abs(window.pageYOffset - _scrollTarget) < 10) {
+            _navScrolling = false;
+            _scrollTarget = null;
+          }
+        }
+        if (_navScrolling) return;
+
+        // Bloqueio contextual: quando o usuário executa uma ação explícita (ex.: "Adicionar
+        // observação"), a intenção dele tem prioridade sobre o recálculo geométrico.
+        // O bloqueio se mantém até um deslocamento intencional de scroll (≥ 150px).
+        if (_contextualLock !== null) {
+          if (Math.abs(window.pageYOffset - _contextualLock) < 150) return;
+          _contextualLock = null;  // deslocamento suficiente — libera o bloqueio
+        }
+
+        // Checkpoint: última seção cujo topo cruzou a linha de entrada.
+        var candidate = 0;
+        for (var i = 0; i < SECTION_IDS.length; i++) {
+          var el = document.getElementById(SECTION_IDS[i]);
+          if (!el) continue;
+          if (el.getBoundingClientRect().top <= ENTRY_LINE) {
+            candidate = i;
+          }
+        }
+
+        if (candidate === activeIdx) return;
+
+        if (candidate > activeIdx) {
+          // Avançando (descendo): troca imediata — a nova seção já entrou na linha de referência
+          setActive(candidate);
+        } else {
+          // Recuando (subindo): só troca quando a seção atual recuou o suficiente,
+          // sinalizando intenção clara de voltar — evita troca precipitada a cada pixel
+          var activeSec = document.getElementById(SECTION_IDS[activeIdx]);
+          if (activeSec && activeSec.getBoundingClientRect().top > BACK_THRESHOLD) {
+            setActive(candidate);
+          }
+        }
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateNav);
+        }
+      }
+
+      function init() {
+        navBtns = Array.from(document.querySelectorAll('.nav-item'));
+        window.addEventListener('scroll', onScroll, { passive: true });
+        updateNav();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+
+    // ── Foco nos campos → atualiza navegação rápida ───────────────
+    (function() {
+      var SECTION_IDS = ['sec-identificacao','sec-endereco','sec-contato','sec-ocupacao','sec-referencias','sec-observacoes'];
+      var formArea = document.querySelector('.form-area');
+      if (!formArea) return;
+      formArea.addEventListener('focusin', function(e) {
+        var t = e.target;
+        if (!t || (t.tagName !== 'INPUT' && t.tagName !== 'SELECT' && t.tagName !== 'TEXTAREA')) return;
+        var section = t.closest('section[id]');
+        if (!section) return;
+        var idx = SECTION_IDS.indexOf(section.id);
+        if (idx < 0) return;
+        if (_navScrolling) return;
+        document.querySelectorAll('.nav-item').forEach(function(b, i) {
+          b.classList.toggle('nav-item--active', i === idx);
+        });
+      });
+    })();
+
+    // ── Botões "Adicionar" → ativação contextual imediata da nav ─────────────
+    (function() {
+      var SECTION_IDS = ['sec-identificacao','sec-endereco','sec-contato','sec-ocupacao','sec-referencias','sec-observacoes'];
+      function activateNav(sectionId) {
+        if (_navScrolling) return;
+        var idx = SECTION_IDS.indexOf(sectionId);
+        if (idx < 0) return;
+        _contextualLock = window.pageYOffset;
+        document.querySelectorAll('.nav-item').forEach(function(b, i) {
+          b.classList.toggle('nav-item--active', i === idx);
+        });
+      }
+      var btnRef = document.getElementById('btn-adicionar-ref');
+      if (btnRef) {
+        btnRef.addEventListener('click', function() { activateNav('sec-referencias'); });
+      }
+      var secObs = document.getElementById('sec-observacoes');
+      if (secObs) {
+        secObs.addEventListener('click', function(e) {
+          var btn = e.target.closest('button[ng-click]');
+          if (btn && btn.getAttribute('ng-click').indexOf('obsModoEdicao') >= 0) {
+            activateNav('sec-observacoes');
+          }
+        });
+      }
+    })();
+
+    // ── AngularJS App ─────────────────────────────────────────────
+    angular.module('cadastroVendasApp', [])
+
+    // ── Diretiva: mascara ─────────────────────────────────────────
+    .directive('mascara', function() {
+      return {
+        restrict: 'A',
+        require: '?ngModel',
+        link: function(scope, element, attrs, ngModel) {
+          var maskType = attrs.mascara;
+          function applyMask(input, mask) {
+            var raw = input.value.replace(/\D/g, '');
+            var out = '';
+            if (mask === 'cpf') {
+              raw = raw.slice(0, 11);
+              if (raw.length > 9) out = raw.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+              else if (raw.length > 6) out = raw.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+              else if (raw.length > 3) out = raw.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+              else out = raw;
+            } else if (mask === 'date') {
+              raw = raw.slice(0, 8);
+              if (raw.length > 4) out = raw.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+              else if (raw.length > 2) out = raw.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+              else out = raw;
+            } else if (mask === 'phone') {
+              raw = raw.slice(0, 11);
+              if (raw.length > 7) out = raw.replace(/(\d{2})(\d{5})(\d{1,4})/, '($1) $2-$3');
+              else if (raw.length > 2) out = raw.replace(/(\d{2})(\d{1,5})/, '($1) $2');
+              else if (raw.length > 0) out = '(' + raw;
+              else out = raw;
+            } else if (mask === 'phone-fix') {
+              raw = raw.slice(0, 10);
+              if (raw.length > 6) out = raw.replace(/(\d{2})(\d{4})(\d{1,4})/, '($1) $2-$3');
+              else if (raw.length > 2) out = raw.replace(/(\d{2})(\d{1,4})/, '($1) $2');
+              else if (raw.length > 0) out = '(' + raw;
+              else out = raw;
+            } else if (mask === 'rg') {
+              raw = raw.slice(0, 9);
+              if (raw.length > 8) out = raw.replace(/(\d{2})(\d{3})(\d{3})(\d{1})/, '$1.$2.$3-$4');
+              else if (raw.length > 5) out = raw.replace(/(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+              else if (raw.length > 2) out = raw.replace(/(\d{2})(\d{1,3})/, '$1.$2');
+              else out = raw;
+            } else if (mask === 'cep') {
+              raw = raw.slice(0, 8);
+              if (raw.length > 5) out = raw.replace(/(\d{5})(\d{1,3})/, '$1-$2');
+              else out = raw;
+            } else if (mask === 'currency') {
+              raw = raw.replace(/^0+/, '') || '0';
+              var cents = raw.padStart(3, '0');
+              var intPart = cents.slice(0, -2).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+              out = (intPart || '0') + ',' + cents.slice(-2);
+            } else if (mask === 'nome') {
+              out = input.value.replace(/\d/g, '');
+            }
+            input.value = out;
+          }
+          element.on('input', function() {
+            applyMask(element[0], maskType);
+            if (ngModel) {
+              ngModel.$setViewValue(element[0].value);
+              scope.$apply();
+            }
+          });
+        }
+      };
+    })
+
+    // ── Controller principal ──────────────────────────────────────
+    .controller('CadastroCtrl', ['$scope', '$timeout', '$http', function($scope, $timeout, $http) {
+
+      // ── Estado do formulário ─────────────────────────────────
+      $scope.form        = {};
+      $scope.exibeConjuge = false;
+      $scope.referencias  = [];
+      $scope.vinculoOpts  = ['Amigo(a)','Vizinho(a)','Namorado(a)','Esposo(a)','Cunhado(a)','Genro/Nora','Filho(a)','Irmão(ã)','Mãe','Pai','Padrasto','Madrasta','Avô(ó)','Primo(a)','Sobrinho(a)','Sogro(a)','Tio(a)','Outro'];
+      $scope.obsState     = 'empty';
+      $scope.obs          = { texto: '', tags: [] };
+
+      // ── Interações do header ─────────────────────────────────
+      var dropdownAberto = false;
+      var modulosAberto  = false;
+      $scope.toggleDropdown = function() { dropdownAberto = !dropdownAberto; modulosAberto = false; _syncHeader(); };
+      $scope.toggleModulos  = function() { modulosAberto = !modulosAberto; dropdownAberto = false; _syncHeader(); };
+      $scope.fecharTudo     = function() { dropdownAberto = false; modulosAberto = false; _syncHeader(); };
+      function _syncHeader() {
+        document.getElementById('hd-user-wrap').classList.toggle('open', dropdownAberto);
+        document.getElementById('hd-modulos-popover').classList.toggle('open', modulosAberto);
+        document.getElementById('hd-overlay').style.display = (dropdownAberto || modulosAberto) ? 'block' : 'none';
+      }
+
+      var _idTimer = null;
+      $scope.copiarId = function() {
+        var texto = appData.storeId;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(texto);
+        } else {
+          var el = document.createElement('textarea');
+          el.value = texto; document.body.appendChild(el); el.select();
+          document.execCommand('copy'); document.body.removeChild(el);
+        }
+        var icon  = document.getElementById('hd-id-icon');
+        var check = document.getElementById('hd-id-check');
+        icon.style.display = 'none'; check.style.display = '';
+        if (_idTimer) clearTimeout(_idTimer);
+        _idTimer = setTimeout(function() { icon.style.display = ''; check.style.display = 'none'; }, 2000);
+      };
+
+      // ── Watchers: campos obrigatórios → habilitam botões do footer ──────
+      $scope.$watch('form.nome', function() { $timeout(function() { updateCount(); }); });
+
+      // ── Validação de datas ────────────────────────────────────────────────
+      $scope.cpfVal = {
+        cpf:     { erro: false, msg: '' },
+        cpfConj: { erro: false, msg: '' }
+      };
+
+      $scope.nomeVal  = { nome:  { erro: false, msg: '' } };
+      $scope.emailVal = { email: { erro: false, msg: '' } };
+      $scope.phoneVal = {
+        celular:  { erro: false, msg: '' },
+        telRes:   { erro: false, msg: '' },
+        telCom:   { erro: false, msg: '' },
+        outroTel: { erro: false, msg: '' }
+      };
+
+      $scope.dateVal = {
+        nasc:      { erro: false, aviso: false, msg: '' },
+        rgEmissao: { erro: false, aviso: false, msg: '' },
+        nascConj:  { erro: false, aviso: false, msg: '' }
+      };
+
+      function isLeapYear(y) { return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; }
+      function daysInMonth(m, y) {
+        return [31, isLeapYear(y) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+      }
+      function parseDateStr(str) {
+        if (!str || str.length !== 10) return null;
+        var p = str.split('/');
+        if (p.length !== 3) return null;
+        var d = parseInt(p[0], 10), m = parseInt(p[1], 10), y = parseInt(p[2], 10);
+        if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+        if (m < 1 || m > 12 || d < 1 || d > daysInMonth(m, y)) return null;
+        var date = new Date(); date.setFullYear(y, m - 1, d);
+        return (date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d) ? date : null;
+      }
+      function calcAge(date) {
+        var today = new Date(), age = today.getFullYear() - date.getFullYear();
+        if (today.getMonth() < date.getMonth() || (today.getMonth() === date.getMonth() && today.getDate() < date.getDate())) age--;
+        return age;
+      }
+      function clearDateVal(key) { $scope.dateVal[key] = { erro: false, aviso: false, msg: '' }; }
+
+      function validateNasc(val) {
+        clearDateVal('nasc');
+        if (!val || val.length < 10) return;
+        var y = parseInt(val.split('/')[2], 10), today = new Date();
+        var date = parseDateStr(val);
+        if (!date)        { $scope.dateVal.nasc.erro = true; $scope.dateVal.nasc.msg = 'Data inválida'; return; }
+        if (y < 1900)     { $scope.dateVal.nasc.erro = true; $scope.dateVal.nasc.msg = 'Ano inválido (mín. 1900)'; return; }
+        if (date > today) { $scope.dateVal.nasc.erro = true; $scope.dateVal.nasc.msg = 'Data não pode ser no futuro'; return; }
+        var age = calcAge(date);
+        if (age < 18) { $scope.dateVal.nasc.aviso = true; $scope.dateVal.nasc.msg = 'Menor de idade (' + age + ' anos)'; }
+        // Revalida emissão do RG reativamente
+        if ($scope.form.rgEmissao && $scope.form.rgEmissao.length === 10) validateRgEmissao($scope.form.rgEmissao);
+      }
+
+      function validateRgEmissao(val) {
+        clearDateVal('rgEmissao');
+        if (!val || val.length < 10) return;
+        var y = parseInt(val.split('/')[2], 10), today = new Date();
+        var date = parseDateStr(val);
+        if (!date)        { $scope.dateVal.rgEmissao.erro = true; $scope.dateVal.rgEmissao.msg = 'Data inválida'; return; }
+        if (y < 1940)     { $scope.dateVal.rgEmissao.erro = true; $scope.dateVal.rgEmissao.msg = 'Ano inválido (mín. 1940)'; return; }
+        if (date > today) { $scope.dateVal.rgEmissao.erro = true; $scope.dateVal.rgEmissao.msg = 'Data não pode ser no futuro'; return; }
+        var nascStr = $scope.form.nascimento;
+        if (nascStr && nascStr.length === 10) {
+          var nascDate = parseDateStr(nascStr);
+          if (nascDate && date < nascDate) { $scope.dateVal.rgEmissao.erro = true; $scope.dateVal.rgEmissao.msg = 'Data anterior ao nascimento'; }
+        }
+      }
+
+      function validateNascConj(val) {
+        clearDateVal('nascConj');
+        if (!val || val.length < 10) return;
+        var y = parseInt(val.split('/')[2], 10), today = new Date();
+        var date = parseDateStr(val);
+        if (!date)        { $scope.dateVal.nascConj.erro = true; $scope.dateVal.nascConj.msg = 'Data inválida'; return; }
+        if (y < 1900)     { $scope.dateVal.nascConj.erro = true; $scope.dateVal.nascConj.msg = 'Ano inválido (mín. 1900)'; return; }
+        if (date > today) { $scope.dateVal.nascConj.erro = true; $scope.dateVal.nascConj.msg = 'Data não pode ser no futuro'; return; }
+        var age = calcAge(date);
+        if (age < 16) { $scope.dateVal.nascConj.erro = true; $scope.dateVal.nascConj.msg = 'Idade mínima: 16 anos'; }
+      }
+
+      $scope.$watch('form.nascimento', function(val) {
+        if (!val || val.length === 0) { clearDateVal('nasc'); return; }
+        if (val.length === 10) validateNasc(val); else clearDateVal('nasc');
+      });
+      $scope.$watch('form.rgEmissao', function(val) {
+        if (!val || val.length === 0) { clearDateVal('rgEmissao'); return; }
+        if (val.length === 10) validateRgEmissao(val); else clearDateVal('rgEmissao');
+      });
+      $scope.$watch('form.nascConjuge', function(val) {
+        if (!val || val.length === 0) { clearDateVal('nascConj'); return; }
+        if (val.length === 10) validateNascConj(val); else clearDateVal('nascConj');
+      });
+
+      // ── Validação de CPF ──────────────────────────────────────────────────
+      function clearCpfVal(key) { $scope.cpfVal[key] = { erro: false, msg: '' }; }
+
+      function validarDigitosCpf(digits) {
+        if (/^(\d)\1{10}$/.test(digits)) return false;
+        var soma = 0, resto;
+        for (var i = 0; i < 9; i++) soma += parseInt(digits[i]) * (10 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        if (resto !== parseInt(digits[9])) return false;
+        soma = 0;
+        for (var i = 0; i < 10; i++) soma += parseInt(digits[i]) * (11 - i);
+        resto = (soma * 10) % 11;
+        if (resto === 10 || resto === 11) resto = 0;
+        return resto === parseInt(digits[10]);
+      }
+
+      function validateCpf(val, key) {
+        clearCpfVal(key);
+        if (!validarDigitosCpf(val.replace(/\D/g, ''))) {
+          $scope.cpfVal[key].erro = true;
+          $scope.cpfVal[key].msg  = 'CPF inválido';
+        }
+        $timeout(function() { updateCount(); });
+      }
+
+      $scope.$watch('form.cpf', function(val) {
+        if (!val || val.length === 0) { clearCpfVal('cpf'); $timeout(function() { updateCount(); }); return; }
+        if (val.length === 14) validateCpf(val, 'cpf'); else clearCpfVal('cpf');
+      });
+      $scope.$watch('form.cpfConjuge', function(val) {
+        if (!val || val.length === 0) { clearCpfVal('cpfConj'); return; }
+        if (val.length === 14) validateCpf(val, 'cpfConj'); else clearCpfVal('cpfConj');
+      });
+
+      // ── Validação: Nome, E-mail e Telefones (on blur) ─────────────────────
+      $scope.validateNomeBlur = function() {
+        var val = ($scope.form.nome || '').trim();
+        $scope.nomeVal.nome = val.length === 0
+          ? { erro: true, msg: 'Informação obrigatória' }
+          : { erro: false, msg: '' };
+        $timeout(function() { updateCount(); });
+      };
+
+      $scope.validateEmailBlur = function() {
+        var val = ($scope.form.email || '').trim();
+        if (!val) { $scope.emailVal.email = { erro: false, msg: '' }; return; }
+        var valido = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val);
+        $scope.emailVal.email = valido
+          ? { erro: false, msg: '' }
+          : { erro: true, msg: 'Dado inválido' };
+      };
+
+      $scope.validatePhoneBlur = function(key, maxLen) {
+        var val = $scope.form[key] || '';
+        if (!val || val.length === 0) { $scope.phoneVal[key] = { erro: false, msg: '' }; return; }
+        $scope.phoneVal[key] = val.length < maxLen
+          ? { erro: true, msg: 'Dado inválido' }
+          : { erro: false, msg: '' };
+      };
+
+      // ── Situação conjugal ─────────────────────────────────────
+      $scope.toggleConjuge = function(valor) {
+        $scope.exibeConjuge = valor === 'Casado(a)' || valor === 'União estável';
+        if (!$scope.exibeConjuge) {
+          $scope.form.cpfConjuge = ''; $scope.form.nomeConjuge = '';
+          $scope.form.nascConjuge = ''; $scope.form.celConjuge = '';
+        }
+        $timeout(function() { updateCount(); });
+      };
+
+      // ── Scroll para seção ─────────────────────────────────────
+      $scope.scrollToSection = function(id, $event) {
+        var btn = $event.currentTarget;
+        document.querySelectorAll('.nav-item').forEach(function(b) { b.classList.remove('nav-item--active'); });
+        btn.classList.add('nav-item--active');
+        var el = document.getElementById(id);
+        if (!el) return;
+        var top = el.getBoundingClientRect().top + window.pageYOffset - 75;
+        _navScrolling = true; _scrollTarget = top; _contextualLock = null;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+        clearTimeout(window._navScrollTimer);
+        window._navScrollTimer = setTimeout(function() { _navScrolling = false; _scrollTarget = null; }, 1200);
+      };
+
+      // ── Espelho do cliente ────────────────────────────────────
+      function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+      function normStr(s) { return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+      function valById(id) {
+        var el = document.getElementById(id); if (!el) return '';
+        if (el.tagName === 'SELECT') { var opt = el.options[el.selectedIndex]; var txt = opt ? opt.text.trim() : ''; return txt === 'Selecione' ? '' : txt; }
+        return el.value.trim();
+      }
+      function disp(v) { return v || '<span class="espelho-field-value empty">Não informado</span>'; }
+      function ef(label, id) { return '<div class="espelho-field"><div class="espelho-field-label">' + label + '</div><div class="espelho-field-value">' + disp(valById(id)) + '</div></div>'; }
+      function subsec(label) { return '<div class="espelho-subsection"><span>' + label + '</span><div class="espelho-subsection-line"></div></div>'; }
+      function finCard(title, subs, total) {
+        var subsHtml = subs.map(function(s) { return '<div class="espelho-fin-cell-sub">' + s + '</div>'; }).join('');
+        return '<div class="espelho-fin-cell"><div class="espelho-fin-cell-title">' + title + '</div>' + subsHtml + (total != null ? '<div class="espelho-fin-cell-total">' + total + '</div>' : '') + '</div>';
+      }
+      $scope.abrirEspelho = function() {
+        var nome = valById('f-nome'), cpf = valById('f-cpf');
+        document.getElementById('espelho-subtitle').textContent = (nome || 'Cliente') + (cpf ? ' | CPF ' + cpf : '');
+        var body = document.getElementById('espelho-body');
+        var fin = appData.financeiro || {};
+        var f = function(k, def) { return (appData.financeiro && fin[k] != null) ? fin[k] : def; };
+        body.innerHTML = [
+          '<div class="espelho-section"><div class="espelho-section-title">Identificação</div>',
+          subsec('Informações pessoais'),
+          '<div class="espelho-grid">', ef('Nome completo','f-nome'), ef('CPF','f-cpf'), ef('Data de nascimento','f-nascimento'), ef('RG','f-rg'), ef('Órgão emissor RG','f-rg-orgao'), ef('Estado emissor RG','f-rg-estado'), ef('Data de emissão RG','f-rg-emissao'), '</div>',
+          subsec('Informações complementares'),
+          '<div class="espelho-grid">', ef('Gênero','f-genero'), ef('Nome completo da mãe','f-mae'), ef('Nome completo do pai','f-pai'), ef('Nível de escolaridade','f-escolaridade'), ef('Possui dependentes?','f-dependentes'), ef('Possui carro?','f-carro'), ef('Possui moto?','f-moto'), '</div>',
+          subsec('Situação conjugal'), '<div class="espelho-grid">', ef('Estado civil atual','f-estado-civil'), '</div></div>',
+          '<hr class="espelho-divider">',
+          '<div class="espelho-section"><div class="espelho-section-title">Endereço</div><div class="espelho-grid">', ef('Cidade','inp-cidade'), ef('CEP','inp-cep'), ef('Logradouro','f-logradouro'), ef('Número','f-numero'), ef('Bairro','f-bairro'), ef('Complemento','f-complemento'), ef('Referência','f-referencia-end'), ef('Tempo de residência','f-tempo-residencia'), ef('Situação da residência','f-situacao-residencia'), '</div></div>',
+          '<hr class="espelho-divider">',
+          '<div class="espelho-section"><div class="espelho-section-title">Contato</div><div class="espelho-grid">', ef('Celular','f-celular'), ef('E-mail','f-email'), ef('Telefone residencial','f-tel-res'), ef('Telefone comercial','f-tel-com'), ef('Outro telefone','f-outro-tel'), '</div></div>',
+          '<hr class="espelho-divider">',
+          '<div class="espelho-section"><div class="espelho-section-title">Ocupação</div><div class="espelho-grid">', ef('Profissão','f-profissao'), ef('Empresa onde trabalha','f-empresa'), ef('Tempo de empresa','f-tempo-empresa'), ef('Salário líquido','f-salario'), '</div></div>',
+          '<hr class="espelho-divider">',
+          '<div class="espelho-section"><div class="espelho-section-title">Referências</div><p style="font-size:14px;color:#333;margin:0">Nenhuma referência adicionada.</p></div>',
+          '<hr class="espelho-divider">',
+          '<div class="espelho-section"><div class="espelho-section-title">Informações financeiras</div><div class="espelho-fin-wrapper">',
+            '<div class="espelho-financeiro"><div class="espelho-fin-row">',
+              finCard('Parcelas pagas',['Quantidade: '+f('parcelasPagasQtd','0')],'Total: R$ '+f('parcelasPagasTotal','0,00')),
+              finCard('Parcelas abertas',['Quantidade: '+f('parcelasAbertasQtd','0')],'Total: R$ '+f('parcelasAbertasTotal','0,00')),
+              finCard('Parcelas vencidas',['Quantidade: '+f('parcelasVencidasQtd','0')],'Total: R$ '+f('parcelasVencidasTotal','0,00')),
+            '</div></div>',
+            '<div class="espelho-financeiro"><div class="espelho-fin-row">',
+              finCard('Encargos de atraso',['Juros pagos: R$ '+f('jurosPagos','0,00'),'Multas pagas: R$ '+f('multasPagas','0,00')],null),
+              finCard('Compras',['Média de compra: R$ '+f('mediaCompra','0,00'),'Total comprado: R$ '+f('totalComprado','0,00')],null),
+            '</div></div>',
+            (!appData.financeiro ? '<div class="espelho-fin-note">Ainda não temos informações sobre os pagamentos do cliente.</div>' : ''),
+          '</div></div>'
+        ].join('');
+        document.getElementById('espelho-overlay').classList.add('open');
+        body.scrollTop = 0;
+      };
+      $scope.fecharEspelho = function() { document.getElementById('espelho-overlay').classList.remove('open'); };
+      $scope.handleEspelhoOverlayClick = function($event) { if ($event.target === document.getElementById('espelho-overlay')) $scope.fecharEspelho(); };
+      $scope.espelhoImprimir = function() { window.print(); };
+
+      // ── Referências ───────────────────────────────────────────
+      $scope.adicionarRef = function() {
+        if ($scope.referencias.length >= 2) return;
+        $scope.referencias.push({ nome: '', vinculo: '', celular: '', telefone: '' });
+        $timeout(function() { updateCount(); });
+      };
+      $scope.removerRef = function(idx) { $scope.referencias.splice(idx, 1); $timeout(function() { updateCount(); }); };
+
+      // ── Observações ───────────────────────────────────────────
+      $scope.obsModoEdicao = function() {
+        $scope.obsState = 'editing';
+        $timeout(function() { var inp = document.getElementById('obs-input'); if (inp) inp.focus(); updateCount(); });
+      };
+      $scope.obsCancelar = function() { $scope.obsState = 'empty'; $scope.obs.tags = []; $scope.obs.texto = ''; $timeout(function() { updateCount(); }); };
+      $scope.obsRemoverTag = function(idx) { $scope.obs.tags.splice(idx, 1); if ($scope.obs.tags.length === 0) $scope.obsState = 'editing'; $timeout(function() { updateCount(); }); };
+      $scope.obsKeydown = function($event) {
+        if ($event.key === 'Enter') {
+          $event.preventDefault();
+          var v = ($scope.obs.texto || '').trim(); if (!v) return;
+          $scope.obs.tags.push(v); $scope.obs.texto = ''; $scope.obsState = 'has-tags';
+          $timeout(function() { updateCount(); });
+        }
+      };
+
+      // ── Helpers: lock/unlock campos de endereço ───────────────
+      function lockCep() {
+        document.getElementById('ctrl-cep').classList.add('ctrl--disabled');
+        var el = document.getElementById('inp-cep'); el.disabled = true; el.value = '';
+        if (listaCep) listaCep.classList.remove('open');
+      }
+      function unlockCep() { document.getElementById('ctrl-cep').classList.remove('ctrl--disabled'); document.getElementById('inp-cep').disabled = false; }
+      function lockNumero() { var el = document.getElementById('f-numero'); el.disabled = true; el.closest('.ctrl').classList.add('ctrl--disabled'); }
+      function unlockNumero() { var el = document.getElementById('f-numero'); el.disabled = false; el.closest('.ctrl').classList.remove('ctrl--disabled'); }
+      function lockAddrDeps() {
+        document.querySelectorAll('.addr-dep').forEach(function(el) { el.disabled = true; var c = el.closest('.ctrl'); if (c) c.classList.add('ctrl--disabled'); });
+      }
+      function unlockAddrDeps() {
+        document.querySelectorAll('.addr-dep').forEach(function(el) { el.disabled = false; var c = el.closest('.ctrl'); if (c) c.classList.remove('ctrl--disabled'); });
+      }
+
+      // ── Status do cadastro ─────────────────────────────────────
+      var STATUS_CONFIG = {
+        incompleto: { label: 'INCOMPLETO', pos: 0, desc: 'O cadastro ainda não possui informações suficientes para a análise.' },
+        basico:     { label: 'BÁSICO',     pos: 1, desc: 'O cadastro contém informações iniciais. Complemente para melhorar a análise.' },
+        desejavel:  { label: 'DESEJÁVEL',  pos: 2, desc: 'O cadastro já possui dados adequados para uma boa análise.' },
+        completo:   { label: 'COMPLETO',   pos: 3, desc: 'Parabéns! O cadastro está completo e pronto para análise.' }
+      };
+      function getStatus(filled) {
+        if (filled >= 40) return 'completo'; if (filled >= 25) return 'desejavel'; if (filled >= 15) return 'basico'; return 'incompleto';
+      }
+      function renderStatusPills(status) {
+        var cfg = STATUS_CONFIG[status], container = document.getElementById('status-pills');
+        container.innerHTML = '';
+        for (var i = 0; i < 4; i++) {
+          if (i === cfg.pos) { var badge = document.createElement('span'); badge.className = 'status-pill-badge status-pill-badge--' + status; badge.textContent = cfg.label; container.appendChild(badge); }
+          else { var bar = document.createElement('div'); bar.className = 'status-pill-bar'; container.appendChild(bar); }
+        }
+        document.getElementById('status-desc').textContent = cfg.desc;
+      }
+      function getAllFields() {
+        return Array.from(document.querySelectorAll('.form-area input:not([disabled]), .form-area select:not([disabled])')).filter(function(el) { return !el.closest('.ctrl--disabled'); });
+      }
+      function updateCount() {
+        var fields = getAllFields(), total = fields.length;
+        var filled = fields.filter(function(el) { return el.tagName === 'SELECT' ? el.value !== '' : el.value.trim() !== ''; }).length;
+        document.getElementById('fields-total').textContent = total;
+        document.getElementById('fields-count').innerHTML = filled + '/<span id="fields-total">' + total + '</span>';
+        renderStatusPills(getStatus(filled));
+        var cpfEl = document.getElementById('f-cpf'), nomeEl = document.getElementById('f-nome');
+        var canSubmit = cpfEl && cpfEl.value.replace(/\D/g,'').length === 11 && !$scope.cpfVal.cpf.erro && nomeEl && nomeEl.value.trim().length > 0 && !$scope.nomeVal.nome.erro;
+        var btnA = document.getElementById('btn-analisar'), btnV = document.getElementById('btn-vender'), btnS = document.getElementById('btn-salvar');
+        btnA.classList.toggle('enabled', canSubmit); btnV.classList.toggle('enabled', canSubmit); btnS.classList.toggle('enabled', canSubmit);
+        if (canSubmit) { btnV.style.background = '#337ab7'; btnV.style.borderColor = '#2e6da4'; }
+        else { btnV.style.background = ''; btnV.style.borderColor = ''; }
+      }
+
+      // ── Autocomplete utilities ─────────────────────────────────
+      function setCtrlLoading(ctrlId, on) { var el = document.getElementById(ctrlId); if (!el) return; el.classList.toggle('ctrl--loading', on); }
+      function highlightText(text, query) {
+        if (!query) return escapeHtml(text);
+        var normT = normStr(text), normQ = normStr(query), idx = normT.indexOf(normQ);
+        if (idx < 0) return escapeHtml(text);
+        return escapeHtml(text.slice(0,idx)) + '<mark class="ac-mark">' + escapeHtml(text.slice(idx, idx+query.length)) + '</mark>' + escapeHtml(text.slice(idx+query.length));
+      }
+      function navLista(e, lista, onSelect) {
+        var items = lista.querySelectorAll('.autocomplete-item:not(.autocomplete-item--empty):not(.autocomplete-item--error)');
+        if (!items.length || !lista.classList.contains('open')) return;
+        var cur = lista.querySelector('.autocomplete-item--active'), idx = Array.from(items).indexOf(cur);
+        if (e.key === 'ArrowDown') { e.preventDefault(); idx = Math.min(idx+1, items.length-1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); idx = Math.max(idx-1, 0); }
+        else if (e.key === 'Enter' && cur) { e.preventDefault(); onSelect(cur); return; }
+        else if (e.key === 'Escape') { lista.classList.remove('open'); return; }
+        else { return; }
+        if (cur) cur.classList.remove('autocomplete-item--active');
+        if (items[idx]) { items[idx].classList.add('autocomplete-item--active'); items[idx].scrollIntoView({ block: 'nearest' }); }
+      }
+
+
+      // ── Endereço: Cidade (IBGE) + CEP/Rua (ViaCEP) ─────────────
+      var _cidadesCache    = null;
+      var _cidadeSelecionada = null;
+      var _cidadeIdx       = -1;
+      var _cepTimer        = null;
+
+      function getUfFromMunicipio(m) {
+        try { return m.microrregiao.mesorregiao.UF.sigla; } catch(e) {}
+        try { return m['regiao-imediata']['regiao-intermediaria'].UF.sigla; } catch(e) {}
+        return '';
+      }
+      function carregarCidades(cb) {
+        if (_cidadesCache) { cb(_cidadesCache); return; }
+        setCtrlLoading('ctrl-cidade', true);
+        $http.get('https://servicodados.ibge.gov.br/api/v1/localidades/municipios?orderBy=nome')
+          .then(function(resp) {
+            _cidadesCache = resp.data.map(function(m) { return { nome: m.nome, uf: getUfFromMunicipio(m) }; }).filter(function(c) { return c.uf; });
+            setCtrlLoading('ctrl-cidade', false); cb(_cidadesCache);
+          }).catch(function(e) { setCtrlLoading('ctrl-cidade', false); console.error('IBGE error:', e); });
+      }
+
+      var inpCidade   = document.getElementById('inp-cidade');
+      var listaCidade = document.getElementById('lista-cidade');
+      var inpCep      = document.getElementById('inp-cep');
+      var listaCep    = document.getElementById('lista-cep');
+
+      inpCidade.addEventListener('focus', function() { carregarCidades(function(){}); });
+      inpCidade.addEventListener('input', function() {
+        _cidadeSelecionada = null; lockCep(); lockNumero(); lockAddrDeps();
+        var q = this.value.trim();
+        if (q.length < 2) { listaCidade.classList.remove('open'); updateCount(); return; }
+        var norm = normStr(q);
+        carregarCidades(function(lista) {
+          var res = lista.filter(function(c) { return normStr(c.nome).startsWith(norm) || normStr(c.nome + ' ' + c.uf).includes(norm); }).slice(0, 9);
+          renderListaCidade(res, q); updateCount();
+        });
+      });
+      inpCidade.addEventListener('blur',    function() { setTimeout(function() { listaCidade.classList.remove('open'); }, 160); });
+      inpCidade.addEventListener('keydown', function(e) { navLista(e, listaCidade, function(item) { item.dispatchEvent(new Event('mousedown')); }); });
+
+      function renderListaCidade(cidades, query) {
+        listaCidade.innerHTML = '';
+        if (!cidades.length) { listaCidade.innerHTML = '<div class="autocomplete-item autocomplete-item--empty">Nenhuma cidade encontrada</div>'; listaCidade.classList.add('open'); return; }
+        cidades.forEach(function(c) {
+          var item = document.createElement('div'); item.className = 'autocomplete-item';
+          item.innerHTML = highlightText(c.nome + ' \u2013 ' + c.uf, query || '');
+          item.addEventListener('mousedown', function(e) { e.preventDefault(); selecionarCidade(c); });
+          listaCidade.appendChild(item);
+        });
+        listaCidade.classList.add('open'); _cidadeIdx = -1;
+      }
+      function selecionarCidade(c) {
+        inpCidade.value = c.nome + ' \u2013 ' + c.uf; _cidadeSelecionada = c;
+        listaCidade.classList.remove('open'); unlockCep(); unlockNumero(); updateCount();
+      }
+
+      inpCep.addEventListener('input', function() {
+        clearTimeout(_cepTimer); lockAddrDeps();
+        var v = this.value.trim(), digits = v.replace(/\D/g, '');
+        if (/^\d[\d\-]*$/.test(v)) {
+          if (digits.length <= 5) this.value = digits;
+          else if (digits.length <= 8) this.value = digits.slice(0,5) + '-' + digits.slice(5);
+          v = this.value.trim(); digits = v.replace(/\D/g,'');
+        }
+        if (digits.length === 8 && /^\d{5}-\d{3}$/.test(v)) {
+          listaCep.classList.remove('open'); setCtrlLoading('ctrl-cep', true);
+          _cepTimer = setTimeout(function() { buscarPorCep(digits); }, 350);
+        } else if (v.length >= 3 && !/^\d/.test(v)) {
+          setCtrlLoading('ctrl-cep', true);
+          _cepTimer = setTimeout(function() { buscarPorRua(v); }, 600);
+        } else { setCtrlLoading('ctrl-cep', false); listaCep.classList.remove('open'); }
+        updateCount();
+      });
+      inpCep.addEventListener('blur',    function() { setTimeout(function() { listaCep.classList.remove('open'); }, 160); });
+      inpCep.addEventListener('keydown', function(e) { navLista(e, listaCep, function(item) { item.dispatchEvent(new Event('mousedown')); }); });
+
+      function buscarPorCep(cep) {
+        $http.get('https://viacep.com.br/ws/' + cep + '/json/').then(function(resp) {
+          setCtrlLoading('ctrl-cep', false);
+          if (resp.data.erro) { mostrarErroCep('CEP n\u00e3o encontrado.'); return; }
+          preencherEndereco(resp.data);
+        }).catch(function() { setCtrlLoading('ctrl-cep', false); mostrarErroCep('Erro ao consultar CEP.'); });
+      }
+      function buscarPorRua(rua) {
+        if (!_cidadeSelecionada) { setCtrlLoading('ctrl-cep', false); return; }
+        var url = 'https://viacep.com.br/ws/' + _cidadeSelecionada.uf + '/' + encodeURIComponent(_cidadeSelecionada.nome) + '/' + encodeURIComponent(rua) + '/json/';
+        $http.get(url).then(function(resp) {
+          setCtrlLoading('ctrl-cep', false);
+          if (!Array.isArray(resp.data) || !resp.data.length) { listaCep.innerHTML = '<div class="autocomplete-item autocomplete-item--empty">Nenhum endere\u00e7o encontrado</div>'; listaCep.classList.add('open'); return; }
+          renderListaCep(resp.data.slice(0, 8), rua);
+        }).catch(function() { setCtrlLoading('ctrl-cep', false); });
+      }
+      function renderListaCep(enderecos, query) {
+        listaCep.innerHTML = '';
+        enderecos.forEach(function(e) {
+          var item = document.createElement('div'); item.className = 'autocomplete-item';
+          var cepFmt = e.cep ? e.cep.replace(/(\d{5})(\d{3})/, '$1-$2') : '';
+          item.innerHTML = '<strong>' + highlightText(e.logradouro || '', query || '') + '</strong>' +
+            (e.complemento ? ', ' + escapeHtml(e.complemento) : '') +
+            '<span class="autocomplete-cep-sub">' + escapeHtml(e.bairro || '') + (e.bairro && cepFmt ? ' &nbsp;\u00b7&nbsp; ' : '') + cepFmt + '</span>';
+          item.addEventListener('mousedown', function(ev) { ev.preventDefault(); inpCep.value = cepFmt; listaCep.classList.remove('open'); preencherEndereco(e); });
+          listaCep.appendChild(item);
+        });
+        listaCep.classList.add('open');
+      }
+      function preencherEndereco(d) {
+        document.getElementById('f-logradouro').value = d.logradouro || '';
+        document.getElementById('f-bairro').value     = d.bairro     || '';
+        unlockAddrDeps(); updateCount();
+      }
+      function mostrarErroCep(msg) {
+        listaCep.innerHTML = '<div class="autocomplete-item autocomplete-item--error">' + msg + '</div>';
+        listaCep.classList.add('open'); setTimeout(function() { listaCep.classList.remove('open'); }, 2800);
+      }
+
+      // ── Profiss\u00e3o autocomplete (lista est\u00e1tica CBO) ─────────────
+      var PROFISSOES = [
+        'A\u00e7ougueiro','Administrador','Advogado','Agente administrativo','Agente de sa\u00fade',
+        'Agente de seguran\u00e7a','Agente de viagens','Agente funер\u00e1rio','Agricultor','Agr\u00f4nomo',
+        'Almoxarife','Analista de sistemas','Analista financeiro','Analista de RH','Analista de marketing',
+        'Analista de suporte','Analista de dados','Aposentado','Arquiteto','Arquivista',
+        'Assistente administrativo','Assistente cont\u00e1bil','Assistente jur\u00eddico','Assistente social',
+        'Atendente','Ator','Auditor','Aut\u00f4nomo','Auxiliar administrativo','Auxiliar de cozinha',
+        'Auxiliar de enfermagem','Auxiliar de escrit\u00f3rio','Auxiliar de produ\u00e7\u00e3o','Auxiliar de servi\u00e7os gerais',
+        'Avicultor','Azulejista','Banc\u00e1rio','Barbeiro','Bi\u00f3logo','Biom\u00e9dico','Bioqu\u00edmico','Bombeiro','Borracheiro',
+        'Cabeleireiro','Carpinteiro','Carteiro','Chapista','Chef de cozinha','Cobrador','Comerciante',
+        'Consultor','Consultor de TI','Contador','Copeiro','Corretor de im\u00f3veis','Corretor de seguros',
+        'Costureiro','Cozinheiro','Dan\u00e7arino','Decorador','Dentista','Designer','Designer gr\u00e1fico',
+        'Designer de interiores','Diretor comercial','Diretor financeiro','Dom\u00e9stica',
+        'Economista','Educador f\u00edsico','Eletricista','Enfermeiro','Engenheiro civil',
+        'Engenheiro el\u00e9trico','Engenheiro mec\u00e2nico','Engenheiro de produ\u00e7\u00e3o','Engenheiro de software',
+        'Engenheiro qu\u00edmico','En\u00f3logo','Esteticista','Farmac\u00eautico','Fisioterapeuta','Floricultor',
+        'Fonoaudi\u00f3logo','Fot\u00f3grafo','Frentista','Funcion\u00e1rio p\u00fablico','Gar\u00e7om','Ge\u00f3grafo','Ge\u00f3logo',
+        'Gerente comercial','Gerente de produ\u00e7\u00e3o','Gestor de TI','Historiador','Hoteleiro',
+        'Industri\u00e1rio','Inspetor de qualidade','Instrumentador cir\u00fargiJco','Jardineiro','Jornalista','Juiz',
+        'Lavrador','Locutor','Manicure','Marceneiro','Marinheiro','Mec\u00e2nico','M\u00e9dico','M\u00e9dico veterin\u00e1rio',
+        'Mergulhador','Meteorologista','Militar','Motorista','M\u00fasico','Nutricionista','Odontol\u00f3go',
+        'Operador de caixa','Operador de m\u00e1quinas','Operador de telemarketing','Ortoptista','Otorrinolaringologista',
+        'Padeiro','Pedagogo','Pedreiro','Personal trainer','Pescador','Pintor','Pipoqueiro','Porteiro',
+        'Professor','Produtor audiovisual','Produtor rural','Programador','Promotor de vendas',
+        'Psic\u00f3logo','Psiquiatra','Publicit\u00e1rio','Qu\u00edmico','Recepcionista','Repositor',
+        'Representante comercial','Retificador','R\u00e1dio-t\u00e9cnico','Seguran\u00e7a','Serralheiro',
+        'Servidor p\u00fablico','Soci\u00f3logo','Soldador','Supervisor','Tapeceiro','T\u00e9cnico agr\u00edcola',
+        'T\u00e9cnico de enfermagem','T\u00e9cnico de inform\u00e1tica','T\u00e9cnico de laborat\u00f3rio','T\u00e9cnico de manuten\u00e7\u00e3o',
+        'T\u00e9cnico de radiologia','T\u00e9cnico em seguran\u00e7a do trabalho','Tecn\u00f3logo','Terapeuta ocupacional',
+        'Torneiro mec\u00e2nico','Tradutor','Transportador','Tratorista','Vendedor','Veterin\u00e1rio','Vigilante'
+      ];
+
+      var inpProfissao   = document.getElementById('f-profissao');
+      var listaProfissao = document.getElementById('lista-profissao');
+
+      inpProfissao.addEventListener('input', function() {
+        var q = this.value.trim();
+        if (q.length < 2) { listaProfissao.classList.remove('open'); updateCount(); return; }
+        var norm = normStr(q);
+        var res  = PROFISSOES.filter(function(p) { return normStr(p).includes(norm); }).slice(0, 9);
+        renderListaProfissao(res, q); updateCount();
+      });
+      inpProfissao.addEventListener('blur',    function() { setTimeout(function() { listaProfissao.classList.remove('open'); }, 160); });
+      inpProfissao.addEventListener('keydown', function(e) { navLista(e, listaProfissao, function(item) { item.dispatchEvent(new Event('mousedown')); }); });
+
+      function renderListaProfissao(profissoes, query) {
+        listaProfissao.innerHTML = '';
+        if (!profissoes.length) { listaProfissao.innerHTML = '<div class="autocomplete-item autocomplete-item--empty">Nenhuma profiss\u00e3o encontrada</div>'; listaProfissao.classList.add('open'); return; }
+        profissoes.forEach(function(p) {
+          var item = document.createElement('div'); item.className = 'autocomplete-item';
+          item.innerHTML = highlightText(p, query || '');
+          item.addEventListener('mousedown', function(e) { e.preventDefault(); inpProfissao.value = p; listaProfissao.classList.remove('open'); updateCount(); });
+          listaProfissao.appendChild(item);
+        });
+        listaProfissao.classList.add('open');
+      }
+
+      // ── Hover do Vender (inline-style managed) ───────────────────
+      $timeout(function() {
+        var btnV = document.getElementById('btn-vender');
+        if (btnV) {
+          btnV.addEventListener('mouseenter', function() { if (this.classList.contains('enabled')) { this.style.background = '#2e6da4'; this.style.borderColor = '#2e6da4'; } });
+          btnV.addEventListener('mouseleave', function() { if (this.classList.contains('enabled')) { this.style.background = '#337ab7'; this.style.borderColor = '#2e6da4'; } });
+        }
+        updateCount();
+      });
+
+    }]); // end CadastroCtrl / end module
+
+
+    // ── Atalhos de teclado ────────────────────────────────────
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') document.querySelector('.btn-cancel').click();
+    });
+  </script>
+</body>
+</html>
